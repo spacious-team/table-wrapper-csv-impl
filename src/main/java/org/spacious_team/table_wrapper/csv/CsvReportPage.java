@@ -62,7 +62,7 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
         this.rows = cells;
     }
 
-    private static CsvParserSettings getDefaultCsvParserSettings() {
+    public static CsvParserSettings getDefaultCsvParserSettings() {
         CsvParserSettings settings = new CsvParserSettings();
         settings.detectFormatAutomatically();
         return settings;
