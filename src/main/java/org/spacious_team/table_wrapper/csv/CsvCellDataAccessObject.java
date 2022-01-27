@@ -24,6 +24,7 @@ import org.spacious_team.table_wrapper.api.CellDataAccessObject;
 import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +53,10 @@ public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex
         DateTimeFormatter formatter = (dateTimeFormatter != null) ?
                 dateTimeFormatter :
                 DateTimeFormatParser.getFor(value);
-        return LocalDateTime.parse(value, formatter)
+        LocalDateTime dateTime = (value.length() == 10) ?
+                LocalDate.parse(value, formatter).atTime(12, 0) :
+                LocalDateTime.parse(value, formatter);
+        return dateTime
                 .atZone(ZoneOffset.systemDefault())
                 .toInstant();
     }

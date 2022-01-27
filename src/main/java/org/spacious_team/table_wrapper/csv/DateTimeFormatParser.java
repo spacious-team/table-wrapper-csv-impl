@@ -37,8 +37,6 @@ class DateTimeFormatParser {
             isYearAtFirst = true;
             dateSplitter = date.charAt(date.length() - 3);
         }
-        appendDate(isYearAtFirst, dateSplitter, new StringBuilder());
-
         return getDateFormatter(isYearAtFirst, dateSplitter);
     }
 
