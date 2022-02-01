@@ -5,7 +5,7 @@
 Предоставляет реализацию `Table Wrapper API` для удобного доступа к табличным данным, сохраненным в файлах формата `csv`.
 Пример создания таблиц из файла `1.csv`
 ```java
-ReportPage reportPage = ...;
+ReportPage reportPage = new CsvReportPage(Path.of("1.csv"));
 
 Table table1 = reportPage.create("Table 1 description", ...);
 ...

@@ -1,0 +1,85 @@
+/*
+ * Table Wrapper Xml SpreadsheetML Impl
+ * Copyright (C) 2022  Vitalii Ananev <spacious-team@ya.ru>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.spacious_team.table_wrapper.csv;
+
+import com.univocity.parsers.common.record.Record;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+import lombok.RequiredArgsConstructor;
+import org.spacious_team.table_wrapper.api.AbstractReportPage;
+import org.spacious_team.table_wrapper.api.TableCellAddress;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.function.BiPredicate;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
+
+    private final String[][] rows;
+
+    /**
+     * Field and line delimiter detected automatically. UTF-8 encoding file expected.
+     */
+    public CsvReportPage(Path path) throws IOException {
+        this(Files.newInputStream(path, StandardOpenOption.READ), UTF_8, getDefaultCsvParserSettings());
+    }
+
+    /**
+     * Closes inputStream if success
+     */
+    public CsvReportPage(InputStream inputStream, Charset charset, CsvParserSettings csvParserSettings) throws IOException {
+        try (Reader inputReader = new InputStreamReader(inputStream, charset)) {
+            CsvParser parser = new CsvParser(csvParserSettings);
+            rows = parser.parseAll(inputReader).toArray(new String[0][]);
+        }
+    }
+
+    public CsvReportPage(String[][] cells) {
+        this.rows = cells;
+    }
+
+    public static CsvParserSettings getDefaultCsvParserSettings() {
+        CsvParserSettings settings = new CsvParserSettings();
+        settings.detectFormatAutomatically();
+        return settings;
+    }
+
+    @Override
+    public TableCellAddress find(Object value, int startRow, int endRow, int startColumn, int endColumn, BiPredicate<String, Object> predicate) {
+        return CsvTableHelper.find(rows, value, startRow, endRow, startColumn, endColumn, predicate);
+    }
+
+    @Override
+    public CsvTableRow getRow(int i) {
+        return (i >= rows.length) ? null : new CsvTableRow(rows[i], i);
+    }
+
+    @Override
+    public int getLastRowNum() {
+        return rows.length - 1;
+    }
+}
