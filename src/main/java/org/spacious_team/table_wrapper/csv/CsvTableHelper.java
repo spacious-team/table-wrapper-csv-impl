@@ -20,19 +20,27 @@ package org.spacious_team.table_wrapper.csv;
 
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 
 class CsvTableHelper {
 
-    static TableCellAddress find(String[][] table, Object value, int startRow, int endRow, int startColumn, int endColumn,
-                                 BiPredicate<String, Object> stringPredicate) {
+    static TableCellAddress find(String[][] table, Object expected,
+                                 int startRow, int endRow,
+                                 int startColumn, int endColumn) {
+        return find(table, startRow, endRow, startColumn, endColumn, equalsPredicate(expected));
+    }
+
+    static TableCellAddress find(String[][] table, int startRow, int endRow, int startColumn, int endColumn,
+                                 Predicate<String> predicate) {
         startRow = Math.max(0, startRow);
         endRow = Math.min(endRow, table.length);
-        for(int rowNum = startRow; rowNum < endRow; rowNum++) {
+        for (int rowNum = startRow; rowNum < endRow; rowNum++) {
             String[] row = table[rowNum];
-            TableCellAddress address = find(row, rowNum, value, startColumn, endColumn, stringPredicate);
+            TableCellAddress address = find(row, rowNum, startColumn, endColumn, predicate);
             if (address != NOT_FOUND) {
                 return address;
             }
@@ -40,18 +48,23 @@ class CsvTableHelper {
         return NOT_FOUND;
     }
 
-    static TableCellAddress find(String[] row, int rowNum, Object value, int startColumn, int endColumn,
-                                 BiPredicate<String, Object> stringPredicate) {
+    static TableCellAddress find(String[] row, int rowNum, int startColumn, int endColumn, Predicate<String> predicate) {
         startColumn = Math.max(0, startColumn);
         endColumn = Math.min(endColumn, row.length);
         for (int i = startColumn; i < endColumn; i++) {
-                String cell = row[i];
-                if (cell != null) {
-                    if (stringPredicate.test(cell, value)) {
-                        return new TableCellAddress(rowNum, i);
-                    }
-                }
+            String cell = row[i];
+            if (predicate.test(cell)) {
+                return new TableCellAddress(rowNum, i);
             }
+        }
         return NOT_FOUND;
+    }
+
+    static Predicate<String> equalsPredicate(Object expected) {
+        if (expected == null) {
+            return Objects::isNull;
+        }
+        String expectedString = expected.toString();
+        return expectedString::equals;
     }
 }
