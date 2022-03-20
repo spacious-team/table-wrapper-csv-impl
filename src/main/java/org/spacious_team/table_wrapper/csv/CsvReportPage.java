@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -69,8 +70,13 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     }
 
     @Override
-    public TableCellAddress find(Object value, int startRow, int endRow, int startColumn, int endColumn, BiPredicate<String, Object> predicate) {
-        return CsvTableHelper.find(rows, value, startRow, endRow, startColumn, endColumn, predicate);
+    public TableCellAddress find(Object value, int startRow, int endRow, int startColumn, int endColumn) {
+        return CsvTableHelper.find(rows, value, startRow, endRow, startColumn, endColumn);
+    }
+
+    @Override
+    public TableCellAddress find(int startRow, int endRow, int startColumn, int endColumn, Predicate<Object> cellValuePredicate) {
+        return CsvTableHelper.find(rows, startRow, endRow, startColumn, endColumn, cellValuePredicate::test);
     }
 
     @Override
