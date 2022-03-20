@@ -9,6 +9,7 @@ import org.spacious_team.table_wrapper.api.TableCellAddress;
 import java.util.Iterator;
 
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
+import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate;
 
 public class CsvTableRow extends AbstractReportPageRow {
 
@@ -48,8 +49,7 @@ public class CsvTableRow extends AbstractReportPageRow {
 
     @Override
     public boolean rowContains(Object value) {
-        value = (value == null) ? null : String.valueOf(value);
-        return CsvTableHelper.find(row, rowNum, value,0, row.length, String::equals) != NOT_FOUND;
+        return CsvTableHelper.find(row, rowNum, 0, row.length, equalsPredicate(value)) != NOT_FOUND;
     }
 
     @Override
