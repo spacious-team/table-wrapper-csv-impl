@@ -16,7 +16,7 @@ public class CsvTableRow extends AbstractReportPageRow {
     private final String[] row;
     @Getter
     private final int rowNum;
-    private final CsvTableCell[] cellsCache;
+    final CsvTableCell[] cellsCache;
 
     public CsvTableRow(String[] row, int rowNum) {
         this.row = row;

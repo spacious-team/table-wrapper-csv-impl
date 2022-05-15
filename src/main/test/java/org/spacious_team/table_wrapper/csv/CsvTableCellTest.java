@@ -18,15 +18,20 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class CsvTableCellTest {
+
     @ParameterizedTest
-    @ValueSource (ints = {1, 2, 3, 4, 5})
+    @ValueSource(ints = {1, 2, 3, 4, 5})
     void getColumnIndex(int i) {
-        CsvTableCell csv = new CsvTableCell(new CsvTableCell.RowAndIndex(new String[5], i));
-        Assertions.assertEquals(i, csv.getColumnIndex());
+        String[] row = new String[5];
+        CsvTableCell.RowAndIndex rowAndIndex = new CsvTableCell.RowAndIndex(row, i);
+        CsvTableCell csv = new CsvTableCell(
+                rowAndIndex);
+        assertEquals(i, csv.getColumnIndex());
     }
 }
