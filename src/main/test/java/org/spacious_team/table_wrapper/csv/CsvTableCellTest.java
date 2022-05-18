@@ -30,8 +30,8 @@ class CsvTableCellTest {
     void getColumnIndex(int i) {
         String[] row = new String[5];
         CsvTableCell.RowAndIndex rowAndIndex = new CsvTableCell.RowAndIndex(row, i);
-        CsvTableCell csv = new CsvTableCell(
-                rowAndIndex);
+        CsvTableCell csv = new CsvTableCell(rowAndIndex);
         assertEquals(i, csv.getColumnIndex());
     }
+
 }

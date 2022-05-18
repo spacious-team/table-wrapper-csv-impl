@@ -18,13 +18,10 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,26 +30,22 @@ class CsvTableRowTest {
 
     @ParameterizedTest
     @MethodSource("indexAndRow")
-    void getCell(int i, String[] row) {
+    void getCell(int rowNum, String[] row, int i) {
         CsvTableCell cell;
-        CsvTableRow csvRow = new CsvTableRow(row, i);
+        CsvTableRow csvRow = new CsvTableRow(row, rowNum);
         if (i >= row.length) {
             assertNull(csvRow.getCell(i));
             return;
         }
-        cell = csvRow.cellsCache[i];
-        if (cell == null) {
-            cell = CsvTableCell.of(row, i);
-            csvRow.cellsCache[i] = cell;
-        }
-        assertEquals(csvRow.getCell(i), cell);
+        cell = CsvTableCell.of(row, i);
+        assertEquals(cell, csvRow.getCell(i));
     }
 
     @ParameterizedTest
     @MethodSource("indexAndRow")
-    void getFirstCellNum(int i, String[] row) {
-        CsvTableRow csv = new CsvTableRow(row, i);
-        if (row.length < 0) {
+    void getFirstCellNum(int rowNum, String[] row) {
+        CsvTableRow csv = new CsvTableRow(row, rowNum);
+        if (row.length <= 0) {
             assertEquals(-1, csv.getFirstCellNum());
         } else {
             assertEquals(0, csv.getFirstCellNum());
@@ -61,18 +54,20 @@ class CsvTableRowTest {
 
     @ParameterizedTest
     @MethodSource("indexAndRow")
-    void getLastCellNum(int i, String[] row) {
-        CsvTableRow csv = new CsvTableRow(row, i);
+    void getLastCellNum(int rowNum, String[] row) {
+        CsvTableRow csv = new CsvTableRow(row, rowNum);
         assertEquals(row.length - 1, csv.getLastCellNum());
     }
 
     private static Stream<Arguments> indexAndRow() {
         String[] row = new String[]{"1", "2", "3"};
         return Stream.of(
-                Arguments.of(1, row),
-                Arguments.of(5, row),
-                Arguments.of(7, row),
-                Arguments.of(2, row)
+                Arguments.of(1, row, 10),
+                Arguments.of(5, row, 2),
+                Arguments.of(7, row, 0),
+                Arguments.of(2, row, 2),
+                Arguments.of(8, new String[]{}, 11)
         );
     }
+
 }

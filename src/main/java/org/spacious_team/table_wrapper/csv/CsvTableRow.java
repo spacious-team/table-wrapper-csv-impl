@@ -14,9 +14,10 @@ import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate
 public class CsvTableRow extends AbstractReportPageRow {
 
     private final String[] row;
+
     @Getter
     private final int rowNum;
-    final CsvTableCell[] cellsCache;
+    private final CsvTableCell[] cellsCache;
 
     public CsvTableRow(String[] row, int rowNum) {
         this.row = row;
@@ -67,5 +68,9 @@ public class CsvTableRow extends AbstractReportPageRow {
                 return getCell(cellIndex++);
             }
         };
+    }
+
+    public CsvTableCell[] getCellsCache() {
+        return cellsCache;
     }
 }
