@@ -22,6 +22,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
 
+import java.util.Objects;
+
 public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
 
     @Getter
@@ -46,5 +48,19 @@ public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
     static class RowAndIndex {
         final String[] row;
         final int columnIndex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CsvTableCell that = (CsvTableCell) o;
+        return Objects.equals(rowAndIndex.row[rowAndIndex.columnIndex],
+                              that.rowAndIndex.row[rowAndIndex.columnIndex]);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rowAndIndex);
     }
 }
