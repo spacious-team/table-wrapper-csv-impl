@@ -27,11 +27,10 @@ class CsvTableCellTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
-    void getColumnIndex(int i) {
+    void getColumnIndex(int colNum) {
         String[] row = new String[5];
-        CsvTableCell.RowAndIndex rowAndIndex = new CsvTableCell.RowAndIndex(row, i);
+        CsvTableCell.RowAndIndex rowAndIndex = new CsvTableCell.RowAndIndex(row, colNum);
         CsvTableCell csv = new CsvTableCell(rowAndIndex);
-        assertEquals(i, csv.getColumnIndex());
+        assertEquals(colNum, csv.getColumnIndex());
     }
-
 }

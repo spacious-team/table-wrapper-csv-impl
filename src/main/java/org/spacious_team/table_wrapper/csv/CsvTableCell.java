@@ -18,15 +18,19 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
 
 import java.util.Objects;
 
+import static lombok.AccessLevel.PACKAGE;
+
+@EqualsAndHashCode(of = {"rowAndIndex"}, callSuper = false)
 public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
 
-    @Getter
+    @Getter(PACKAGE)
     private final RowAndIndex rowAndIndex;
 
     public static CsvTableCell of(String[] row, int columnIndex) {
@@ -43,24 +47,36 @@ public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
         return rowAndIndex.getColumnIndex();
     }
 
-    @Getter
     @RequiredArgsConstructor
-    static class RowAndIndex {
-        final String[] row;
-        final int columnIndex;
-    }
+    static final class RowAndIndex {
+        private final String[] row;
+        @Getter
+        private final int columnIndex;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CsvTableCell that = (CsvTableCell) o;
-        return Objects.equals(rowAndIndex.row[rowAndIndex.columnIndex],
-                              that.rowAndIndex.row[rowAndIndex.columnIndex]);
-    }
+        String getValue() {
+            return checkIndex() ? row[columnIndex] : null;
+        }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(rowAndIndex);
+        private boolean checkIndex() {
+            return columnIndex >= 0 && columnIndex < row.length;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (!(obj instanceof RowAndIndex)) {
+                return false;
+            }
+            RowAndIndex other = (RowAndIndex) obj;
+            return checkIndex() &&
+                    other.checkIndex() &&
+                    Objects.equals(getValue(), other.getValue());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(getValue());
+        }
     }
 }
