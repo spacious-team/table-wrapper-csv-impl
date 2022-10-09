@@ -1,10 +1,8 @@
 package org.spacious_team.table_wrapper.csv;
 
-import com.univocity.parsers.common.record.Record;
 import lombok.Getter;
 import org.spacious_team.table_wrapper.api.AbstractReportPageRow;
 import org.spacious_team.table_wrapper.api.TableCell;
-import org.spacious_team.table_wrapper.api.TableCellAddress;
 
 import java.util.Iterator;
 
@@ -68,9 +66,5 @@ public class CsvTableRow extends AbstractReportPageRow {
                 return getCell(cellIndex++);
             }
         };
-    }
-
-    public CsvTableCell[] getCellsCache() {
-        return cellsCache;
     }
 }
