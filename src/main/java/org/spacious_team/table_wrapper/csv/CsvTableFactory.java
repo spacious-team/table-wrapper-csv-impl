@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2022  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableCellRange;
 import org.spacious_team.table_wrapper.api.TableColumnDescription;
 
+@SuppressWarnings("unused")
 public class CsvTableFactory extends AbstractTableFactory<CsvReportPage> {
 
     public CsvTableFactory() {

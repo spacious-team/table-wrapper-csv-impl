@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2022  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,8 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import lombok.RequiredArgsConstructor;
 import org.spacious_team.table_wrapper.api.AbstractReportPage;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
@@ -33,7 +31,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

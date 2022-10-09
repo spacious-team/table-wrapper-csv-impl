@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package org.spacious_team.table_wrapper.csv;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
