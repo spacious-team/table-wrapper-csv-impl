@@ -32,18 +32,18 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class CsvTableCellTest {
+class CsvTableCellTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
-    public void getColumnIndex(int colNum) {
+    void getColumnIndex(int colNum) {
         String[] row = new String[2];
         CsvTableCell cell = CsvTableCell.of(row, colNum);
         assertEquals(colNum, cell.getColumnIndex());
     }
 
     @Test
-    public void getValue() {
+    void getValue() {
         String[] row = new String[]{"object1", "object2"};
         CsvTableCell cell = CsvTableCell.of(row, 0);
         assertEquals("object1", cell.getValue());
@@ -53,7 +53,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void getIntValue() {
+    void getIntValue() {
         String[] row = new String[]{"1024", "1025"};
         CsvTableCell cell = CsvTableCell.of(row, 0);
         assertEquals(1024, cell.getIntValue());
@@ -63,7 +63,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void getLongValue() {
+    void getLongValue() {
         String[] row = new String[]{"1024", "1025"};
         CsvTableCell cell = CsvTableCell.of(row, 0);
         assertEquals(1024L, cell.getLongValue());
@@ -73,7 +73,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void getDoubleValue() {
+    void getDoubleValue() {
         String[] row = new String[]{"10.24", "10.24000", "10.2400000000000000000000000000000000001", "10.24001"};
         CsvTableCell cell0 = CsvTableCell.of(row, 0);
         assertEquals(10.24D, cell0.getDoubleValue());
@@ -92,7 +92,7 @@ public class CsvTableCellTest {
      * @see <a href="https://stackoverflow.com/questions/6787142/bigdecimal-equals-versus-compareto">Stack overflow</a>
      */
     @Test
-    public void getBigDecimalValue() {
+    void getBigDecimalValue() {
         BigDecimal expected = new BigDecimal("10.24");
         String[] row = new String[]{"10.24", "10.24000", "10.2400000000000000000000000000000000001"};
 
@@ -110,7 +110,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void getStringValue() {
+    void getStringValue() {
         String[] row = new String[]{"object1", "object2"};
         CsvTableCell cell = CsvTableCell.of(row, 0);
         assertEquals("object1", cell.getStringValue());
@@ -121,7 +121,7 @@ public class CsvTableCellTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"2022-10-11", "11-10-2022", "11 10 2022", "2022/10/11", "11.10.2022"})
-    public void getInstantValueWithDate(String date) {
+    void getInstantValueWithDate(String date) {
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(12, 0)
                 .atZone(ZoneOffset.systemDefault())
@@ -134,7 +134,7 @@ public class CsvTableCellTest {
     @ParameterizedTest
     @ValueSource(strings = {"2022-10-11 03:01:00", "03:01:00 11-10-2022", "11 10 2022 03:01:00",
             "03:01:00 2022/10/11", "11.10.2022 03:01:00"})
-    public void getInstantValueWithDateTime(String dateTime) {
+    void getInstantValueWithDateTime(String dateTime) {
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1)
                 .atOffset(ZoneOffset.ofHours(3))
@@ -146,7 +146,7 @@ public class CsvTableCellTest {
 
     @ParameterizedTest
     @ValueSource(strings = "2022-10-11T03:01:00+03:00")
-    public void getInstantValueWithFormat(String dateTime) {
+    void getInstantValueWithFormat(String dateTime) {
         try {
             CsvCellDataAccessObject.dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
             Instant expected = LocalDate.of(2022, 10, 11)
@@ -164,7 +164,7 @@ public class CsvTableCellTest {
     @ParameterizedTest
     @ValueSource(strings = {"2022-10-11 03:01:00", "03:01:00 11-10-2022", "11 10 2022 03:01:00",
             "03:01:00 2022/10/11", "11.10.2022 03:01:00"})
-    public void getLocalDateTimeValue(String dateTime) {
+    void getLocalDateTimeValue(String dateTime) {
         LocalDateTime expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1);
         String[] row = new String[]{dateTime};
@@ -173,7 +173,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void equals() {
+    void equals() {
         String[] row = new String[]{"abc", "abc"};
         assertEquals(
                 CsvTableCell.of(row, 0),
@@ -181,7 +181,7 @@ public class CsvTableCellTest {
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         String[] row = new String[]{"abc", "abc"};
         assertEquals(
                 CsvTableCell.of(row, 0).hashCode(),
