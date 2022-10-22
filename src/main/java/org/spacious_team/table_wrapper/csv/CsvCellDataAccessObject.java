@@ -18,8 +18,7 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
 import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
@@ -29,11 +28,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+@RequiredArgsConstructor
 public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex, CsvTableRow> {
-    public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject();
-    @Setter
-    @Getter
-    public static DateTimeFormatter dateTimeFormatter = null;
+    public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject(null);
+    /**
+     * If null, date time format is derived from value
+     */
+    public final DateTimeFormatter dateTimeFormatter;
 
     @Override
     public RowAndIndex getCell(CsvTableRow row, Integer cellIndex) {

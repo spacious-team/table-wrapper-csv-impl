@@ -20,6 +20,7 @@ package org.spacious_team.table_wrapper.csv;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.spacious_team.table_wrapper.api.AbstractReportPage;
 import org.spacious_team.table_wrapper.api.AbstractTable;
@@ -31,8 +32,9 @@ import org.spacious_team.table_wrapper.api.TableColumnDescription;
 @ToString(callSuper = true)
 public class CsvTable extends AbstractTable<CsvTableRow> {
 
+    @Setter
     @Getter(AccessLevel.PROTECTED)
-    private final CellDataAccessObject<?, CsvTableRow> cellDataAccessObject = CsvCellDataAccessObject.INSTANCE;
+    private CellDataAccessObject<?, CsvTableRow> cellDataAccessObject = CsvCellDataAccessObject.INSTANCE;
 
     protected CsvTable(AbstractReportPage<CsvTableRow> reportPage,
                        String tableName,

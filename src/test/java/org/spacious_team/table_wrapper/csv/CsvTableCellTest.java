@@ -147,18 +147,14 @@ class CsvTableCellTest {
     @ParameterizedTest
     @ValueSource(strings = "2022-10-11T03:01:00+03:00")
     void getInstantValueWithFormat(String dateTime) {
-        try {
-            CsvCellDataAccessObject.dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
-            Instant expected = LocalDate.of(2022, 10, 11)
-                    .atTime(3, 1)
-                    .atOffset(ZoneOffset.ofHours(3))
-                    .toInstant();
-            String[] row = new String[]{dateTime};
-            CsvTableCell cell = CsvTableCell.of(row, 0);
-            assertEquals(expected, cell.getInstantValue());
-        } finally {
-            CsvCellDataAccessObject.dateTimeFormatter = null;
-        }
+        CsvCellDataAccessObject dao = new CsvCellDataAccessObject(DateTimeFormatter.ISO_DATE_TIME);
+        Instant expected = LocalDate.of(2022, 10, 11)
+                .atTime(3, 1)
+                .atOffset(ZoneOffset.ofHours(3))
+                .toInstant();
+        String[] row = new String[]{dateTime};
+        CsvTableCell cell = CsvTableCell.of(row, 0, dao);
+        assertEquals(expected, cell.getInstantValue());
     }
 
     @ParameterizedTest
