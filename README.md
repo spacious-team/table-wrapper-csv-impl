@@ -3,7 +3,7 @@
 https://jitpack.io/#spacious-team/table-wrapper-csv-impl)
 [![Unit tests](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fspacious-team%2Ftable-wrapper-csv-impl%2Fbadge%3Fref%3Ddevelop&style=flat-square&label=Test&logo=none)](
 https://github.com/spacious-team/table-wrapper-csv-impl/actions/workflows/unit-tests.yml)
-[![Coverage](https://img.shields.io/codecov/c/github/spacious-team/table-wrapper-csv-impl/develop?style=flat-square&token=abjh1TArzE)](
+[![Coverage](https://img.shields.io/codecov/c/github/spacious-team/table-wrapper-csv-impl/develop?label=Coverage&style=flat-square&token=abjh1TArzE)](
 https://codecov.io/gh/spacious-team/table-wrapper-csv-impl)
 
 ### Назначение
