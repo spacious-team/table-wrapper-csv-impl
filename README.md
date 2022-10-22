@@ -1,5 +1,8 @@
 ![java-version](https://img.shields.io/badge/Java-11-brightgreen?style=flat-square)
-![jitpack-last-release](https://jitpack.io/v/spacious-team/table-wrapper-csv-impl.svg?style=flat-square)
+[![jitpack-last-release](https://jitpack.io/v/spacious-team/table-wrapper-csv-impl.svg?style=flat-square)](
+https://jitpack.io/#spacious-team/table-wrapper-csv-impl)
+[![Unit tests](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fspacious-team%2Ftable-wrapper-csv-impl%2Fbadge%3Fref%3Ddevelop&style=flat-square&label=Test&logo=none)](
+https://github.com/spacious-team/table-wrapper-csv-impl/actions/workflows/unit-tests.yml)
 
 ### Назначение
 Предоставляет реализацию `Table Wrapper API` для удобного доступа к табличным данным, сохраненным в файлах формата `csv`.
@@ -34,7 +37,7 @@ Table tableN = reportPage.create("Table N description", ...);
     </repository>
 </repositories>
 ```
-и добавить зависимость
+Далее следует добавить зависимость
 ```xml
 <dependency>
     <groupId>com.github.spacious-team</groupId>
@@ -45,4 +48,4 @@ Table tableN = reportPage.create("Table N description", ...);
 В качестве версии можно использовать:
 - версию [релиза](https://github.com/spacious-team/table-wrapper-csv-impl/releases) на github;
 - паттерн `<branch>-SNAPSHOT` для сборки зависимости с последнего коммита выбранной ветки;
-- короткий 10-ти значный номер коммита для сборки зависимости с указанного коммита.
+- короткий десяти значный номер коммита для сборки зависимости с указанного коммита.
