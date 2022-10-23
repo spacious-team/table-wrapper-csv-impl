@@ -24,6 +24,7 @@ import org.spacious_team.table_wrapper.api.AbstractReportPageRow;
 import org.spacious_team.table_wrapper.api.TableCell;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate;
@@ -83,7 +84,10 @@ public class CsvTableRow extends AbstractReportPageRow {
 
             @Override
             public TableCell next() {
-                return getCell(cellIndex++);
+                if (hasNext()) {
+                    return getCell(cellIndex++);
+                }
+                throw new NoSuchElementException();
             }
         };
     }

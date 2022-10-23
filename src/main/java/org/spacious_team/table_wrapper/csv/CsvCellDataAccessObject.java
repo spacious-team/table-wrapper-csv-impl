@@ -25,7 +25,7 @@ import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
@@ -56,7 +56,7 @@ public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex
                 LocalDate.parse(value, formatter).atTime(12, 0) :
                 LocalDateTime.parse(value, formatter);
         return dateTime
-                .atZone(ZoneOffset.systemDefault())
+                .atZone(ZoneId.systemDefault())
                 .toInstant();
     }
 }

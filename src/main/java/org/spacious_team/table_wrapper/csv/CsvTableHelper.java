@@ -18,14 +18,17 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.NoArgsConstructor;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static lombok.AccessLevel.PRIVATE;
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 
-class CsvTableHelper {
+@NoArgsConstructor(access = PRIVATE)
+final class CsvTableHelper {
 
     static TableCellAddress find(String[][] table, Object expected,
                                  int startRow, int endRow,
