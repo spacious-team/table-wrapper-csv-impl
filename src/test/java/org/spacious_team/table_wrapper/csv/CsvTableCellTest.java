@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -147,10 +148,11 @@ class CsvTableCellTest {
     @ParameterizedTest
     @ValueSource(strings = "2022-10-11T03:01:00+03:00")
     void getInstantValueWithFormat(String dateTime) {
-        CsvCellDataAccessObject dao = new CsvCellDataAccessObject(DateTimeFormatter.ISO_DATE_TIME);
+        ZoneId zoneId = ZoneOffset.systemDefault();
+        CsvCellDataAccessObject dao = new CsvCellDataAccessObject(DateTimeFormatter.ISO_DATE_TIME, zoneId);
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1)
-                .atZone(ZoneOffset.systemDefault())
+                .atZone(zoneId)
                 .toInstant();
         String[] row = new String[]{dateTime};
         CsvTableCell cell = CsvTableCell.of(row, 0, dao);

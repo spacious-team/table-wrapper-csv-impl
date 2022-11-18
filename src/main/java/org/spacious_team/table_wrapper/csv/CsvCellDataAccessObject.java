@@ -18,7 +18,7 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
 import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
@@ -27,36 +27,49 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
-@RequiredArgsConstructor
 public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex, CsvTableRow> {
-    public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject(null);
+    public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject();
     /**
      * If null, date time format is derived from value
      */
-    public final DateTimeFormatter dateTimeFormatter;
+    private final @Nullable DateTimeFormatter dateTimeFormatter;
+    private final @Nullable ZoneId defaultZone;
 
-    @Override
-    public RowAndIndex getCell(CsvTableRow row, Integer cellIndex) {
-        return row.getCell(cellIndex).getRowAndIndex();
+    public CsvCellDataAccessObject() {
+        this(null, null);
+    }
+
+    public CsvCellDataAccessObject(@Nullable DateTimeFormatter dateTimeFormatter,
+                                   @Nullable ZoneId defaultZone) {
+        this.dateTimeFormatter = dateTimeFormatter;
+        this.defaultZone = defaultZone;
     }
 
     @Override
-    public String getValue(RowAndIndex cell) {
+    public @Nullable RowAndIndex getCell(CsvTableRow row, Integer cellIndex) {
+        @Nullable CsvTableCell cell = row.getCell(cellIndex);
+        return (cell == null) ? null : cell.getRowAndIndex();
+    }
+
+    @Override
+    public @Nullable String getValue(RowAndIndex cell) {
         return cell.getValue();
     }
 
     @Override
     public Instant getInstantValue(RowAndIndex cell) {
-        String value = getValue(cell);
+        @Nullable String value = getValue(cell);
+        Objects.requireNonNull(value, "Not an instant");
         DateTimeFormatter formatter = (dateTimeFormatter != null) ?
                 dateTimeFormatter :
                 DateTimeFormatParser.getFor(value);
         LocalDateTime dateTime = (value.length() == 10) ?
-                LocalDate.parse(value, formatter).atTime(12, 0) :
+                LocalDate.parse(value, formatter).atTime(12, 0) : //TODO formatter can parse time and zone
                 LocalDateTime.parse(value, formatter);
         return dateTime
-                .atZone(ZoneId.systemDefault())
+                .atZone(defaultZone == null ? ZoneId.systemDefault() : defaultZone)
                 .toInstant();
     }
 }

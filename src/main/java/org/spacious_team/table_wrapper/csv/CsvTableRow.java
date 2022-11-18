@@ -20,6 +20,7 @@ package org.spacious_team.table_wrapper.csv;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPageRow;
 import org.spacious_team.table_wrapper.api.TableCell;
 
@@ -45,7 +46,7 @@ public class CsvTableRow extends AbstractReportPageRow {
     }
 
     @Override
-    public CsvTableCell getCell(int i) {
+    public @Nullable CsvTableCell getCell(int i) {
         if (i >= row.length) {
             return null;
         }
@@ -73,8 +74,8 @@ public class CsvTableRow extends AbstractReportPageRow {
     }
 
     @Override
-    public Iterator<TableCell> iterator() {
-        return new Iterator<>() {
+    public Iterator<@Nullable TableCell> iterator() {
+        return new Iterator<@Nullable TableCell>() {
             private int cellIndex = 0;
 
             @Override
@@ -83,7 +84,7 @@ public class CsvTableRow extends AbstractReportPageRow {
             }
 
             @Override
-            public TableCell next() {
+            public @Nullable TableCell next() {
                 if (hasNext()) {
                     return getCell(cellIndex++);
                 }

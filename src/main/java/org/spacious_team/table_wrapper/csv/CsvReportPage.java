@@ -20,6 +20,7 @@ package org.spacious_team.table_wrapper.csv;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPage;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
@@ -77,7 +78,7 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     }
 
     @Override
-    public CsvTableRow getRow(int i) {
+    public @Nullable CsvTableRow getRow(int i) {
         return (i >= rows.length) ? null : new CsvTableRow(rows[i], i);
     }
 

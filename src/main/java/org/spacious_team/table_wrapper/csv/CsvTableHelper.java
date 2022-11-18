@@ -56,12 +56,13 @@ final class CsvTableHelper {
         for (int i = startColumn; i < endColumn; i++) {
             String cell = row[i];
             if (predicate.test(cell)) {
-                return new TableCellAddress(rowNum, i);
+                return TableCellAddress.of(rowNum, i);
             }
         }
         return NOT_FOUND;
     }
 
+    @SuppressWarnings({"nullness", "ConstantConditions"})
     static Predicate<String> equalsPredicate(Object expected) {
         if (expected == null) {
             return Objects::isNull;
