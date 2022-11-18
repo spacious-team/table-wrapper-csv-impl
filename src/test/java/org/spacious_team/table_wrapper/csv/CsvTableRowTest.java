@@ -18,6 +18,7 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,7 +26,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.spacious_team.table_wrapper.api.TableCell;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -83,6 +86,7 @@ class CsvTableRowTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     void rowContains() {
         String[] row = new String[]{null, "1", "2.1", "2.20", "abc", "2020-01-01T01:02:03"};
         CsvTableRow csvTableRow = new CsvTableRow(row, 0);
@@ -97,6 +101,7 @@ class CsvTableRowTest {
 
     @Test
     void iterator() {
+        @SuppressWarnings("ConstantConditions")
         String[] row = new String[]{null, "1", "2.1", "2.20", "abc", "2020-01-01T01:02:03"};
         CsvTableRow csvTableRow = new CsvTableRow(row, 0);
         List<CsvTableCell> expected = IntStream.range(0, row.length)
@@ -107,6 +112,19 @@ class CsvTableRowTest {
                         false)
                 .collect(Collectors.toList());
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void iteratorThrows() {
+        @SuppressWarnings("ConstantConditions")
+        String[] row = new String[]{null, "1"};
+        CsvTableRow csvTableRow = new CsvTableRow(row, 0);
+        Iterator<@Nullable TableCell> it = csvTableRow.iterator();
+        //noinspection ConstantConditions
+        assertNull(it.next().getValue());
+        //noinspection ConstantConditions
+        assertEquals("1", it.next().getValue());
+        assertThrows(NoSuchElementException.class, it::next);
     }
 
     @Test
