@@ -18,7 +18,9 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.format.DateTimeFormatter;
@@ -30,20 +32,28 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 final class DateTimeFormatParser {
 
-    // internal calculated unique key -> date-time format
-    private static final Map<Integer, DateTimeFormatter> dateTimeFormatters = new ConcurrentHashMap<>();
+    private static final Map<Pattern, DateTimeFormatter> dateTimeFormatters = new ConcurrentHashMap<>();
 
-    static DateTimeFormatter getFor(String dateTime) {
-        return (dateTime.length() == 10) ?
-            getForDate(dateTime) :
-            getForDateTime(dateTime);
+    static DateTimeFormatter getFor(String dateTimeOffset) {
+        @Nullable Pattern pattern = null;
+        int length = dateTimeOffset.length();
+        if (length == 10) {
+            pattern = getForDate(dateTimeOffset, 0);
+        } else if (length == 18) {
+            pattern = getForDateTime(dateTimeOffset);
+        } else if (length > 18) {
+            pattern = getForDateTimeZone(dateTimeOffset);
+        }
+        if (pattern == null) {
+            throw new IllegalArgumentException("Unknown date time format for: " + dateTimeOffset);
+        }
+        return getDateTimeFormatter(pattern);
     }
 
-    static DateTimeFormatter getForDate(String date) {
+    static DatePattern getForDate(String date, int dateOffset) {
         boolean isYearAtFirst;
         char dateSplitter;
-        @SuppressWarnings("DuplicatedCode")
-        char ch = date.charAt(date.length() - 5);
+        char ch = date.charAt(dateOffset + 2);
         if (!Character.isDigit(ch)) {
             // date format is DD MM YYYY
             isYearAtFirst = false;
@@ -51,90 +61,117 @@ final class DateTimeFormatParser {
         } else {
             // date format is YYYY MM DD
             isYearAtFirst = true;
-            dateSplitter = date.charAt(date.length() - 3);
+            dateSplitter = date.charAt(dateOffset + 4);
         }
-        return getDateFormatter(isYearAtFirst, dateSplitter);
+        return DatePattern.of(isYearAtFirst, dateSplitter);
     }
 
-    static DateTimeFormatter getForDateTime(String dateTime) {
+    static DateTimePattern getForDateTime(String dateTime) {
         boolean isDateAtFirst;
-        boolean isYearAtFirst;
-        char dateSplitter;
+        DatePattern datePattern;
         if (dateTime.charAt(2) == ':') {
             // format is <time> <date>
             isDateAtFirst = false;
-            char ch = dateTime.charAt(dateTime.length() - 5);
-            if (!Character.isDigit(ch)) {
-                // date format is DD MM YYYY
-                isYearAtFirst = false;
-                dateSplitter = ch;
-            } else {
-                // date format is YYYY MM DD
-                isYearAtFirst = true;
-                dateSplitter = dateTime.charAt(dateTime.length() - 3);
-            }
+            datePattern = getForDate(dateTime, 9);
         } else {
             // format is <date> <time>
             isDateAtFirst = true;
-            if (!Character.isDigit(dateTime.charAt(2))) {
-                // date format is DD MM YYYY
-                isYearAtFirst = false;
-                dateSplitter = dateTime.charAt(2);
+            datePattern = getForDate(dateTime, 0);
+        }
+        return DateTimePattern.of(isDateAtFirst, datePattern);
+    }
+
+    static ZonedDateTimePattern getForDateTimeZone(String dateTimeOffset) {
+        String zonePattern;
+        int length = dateTimeOffset.length();
+        if (length == 19) {
+            // Z timezone
+            zonePattern = "VV";
+        } else if (length == 21) {
+            // MSK
+            zonePattern = "z";
+        } else if (dateTimeOffset.indexOf("/", 19) != -1) {
+            // "Europe/Paris"
+            zonePattern = "VV";
+        } else if (dateTimeOffset.indexOf("+", 19) != -1) {
+            if (dateTimeOffset.charAt(21) == ':') {
+                // +03:00
+                zonePattern = "XXX";
             } else {
-                // date format is YYYY MM DD
-                isYearAtFirst = true;
-                dateSplitter = dateTime.charAt(4);
+                // +0300
+                zonePattern = "XX";
             }
-        }
-        return getDateTimeFormatter(isDateAtFirst, isYearAtFirst, dateSplitter);
-    }
-
-    private static DateTimeFormatter getDateFormatter(boolean isYearAtFirst, char dateSplitter) {
-        Integer key = dateSplitter + 0x40000 + (isYearAtFirst ? 0x20000 : 0);
-        @Nullable DateTimeFormatter result = dateTimeFormatters.get(key);
-        if (result == null) {
-            StringBuilder format = new StringBuilder();
-            appendDate(isYearAtFirst, dateSplitter, format);
-            result = DateTimeFormatter.ofPattern(format.toString());
-            dateTimeFormatters.putIfAbsent(key, result);
-        }
-        return result;
-    }
-
-    /**
-     * @param isDateAtFirst true if date-time format is '[date] [time]', false if '[time] [date]'
-     * @param isYearAtFirst true if YYYY in [date] template at first, for example YYYY-MM-DD, false otherwise
-     * @param dateSplitter date splitter char in date, for example for YYYY-MM-DD, should be '-'
-     */
-    private static DateTimeFormatter getDateTimeFormatter(boolean isDateAtFirst, boolean isYearAtFirst, char dateSplitter) {
-        Integer key = dateSplitter + (isDateAtFirst ? 0x10000 : 0) + (isYearAtFirst ? 0x20000 : 0);
-        @Nullable DateTimeFormatter result = dateTimeFormatters.get(key);
-        if (result == null) {
-            StringBuilder format = new StringBuilder();
-            if (isDateAtFirst) {
-                appendDate(isYearAtFirst, dateSplitter, format);
-                format.append(" ");
-                appendTime(format);
+        } else if (dateTimeOffset.charAt(18) == 'G' || dateTimeOffset.charAt(18) == 'U') {
+            if (length >= 23 && dateTimeOffset.charAt(22) == '0') {
+                // GMT+03:00 / UTC+03:00:00
+                zonePattern = "OOOO";
             } else {
-                appendTime(format);
-                format.append(" ");
-                appendDate(isYearAtFirst, dateSplitter, format);
+                // GMT / GMT+3 / UTC / UTC+330
+                zonePattern = "O";
             }
-            result = DateTimeFormatter.ofPattern(format.toString());
-            dateTimeFormatters.putIfAbsent(key, result);
-        }
-        return result;
-    }
-
-    private static void appendDate(boolean isYearAtFirst, char dateSplitter, StringBuilder format) {
-        if (isYearAtFirst) {
-            format.append("yyyy").append(dateSplitter).append("MM").append(dateSplitter).append("dd");
         } else {
-            format.append("dd").append(dateSplitter).append("MM").append(dateSplitter).append("yyyy");
+            // fallback
+            zonePattern = "VV";
+        }
+        DateTimePattern dateTimePattern = getForDateTime(dateTimeOffset);
+        return ZonedDateTimePattern.of(zonePattern, dateTimePattern);
+    }
+
+    private static DateTimeFormatter getDateTimeFormatter(Pattern pattern) {
+        return dateTimeFormatters.computeIfAbsent(pattern, DateTimeFormatParser::buildDateTimePattern);
+    }
+
+    private static DateTimeFormatter buildDateTimePattern(Pattern pattern) {
+        StringBuilder builder = new StringBuilder();
+        pattern.build(builder);
+        return DateTimeFormatter.ofPattern(builder.toString());
+    }
+
+    private interface Pattern {
+        void build(StringBuilder format);
+    }
+
+    @EqualsAndHashCode
+    @RequiredArgsConstructor(staticName = "of")
+    private static class DatePattern implements Pattern {
+        private final boolean isYearAtFirst;
+        private final char dateSplitter;
+
+        public void build(StringBuilder format) {
+            if (isYearAtFirst) {
+                format.append("yyyy").append(dateSplitter).append("MM").append(dateSplitter).append("dd");
+            } else {
+                format.append("dd").append(dateSplitter).append("MM").append(dateSplitter).append("yyyy");
+            }
         }
     }
 
-    private static void appendTime(StringBuilder format) {
-        format.append("HH:mm:ss");
+    @EqualsAndHashCode
+    @RequiredArgsConstructor(staticName = "of")
+    private static class DateTimePattern implements Pattern {
+        private final boolean isDateAtFirst;
+        private final DatePattern datePattern;
+
+        public void build(StringBuilder format) {
+            if (isDateAtFirst) {
+                datePattern.build(format);
+                format.append(" HH:mm:ss");
+            } else {
+                format.append("HH:mm:ss ");
+                datePattern.build(format);
+            }
+        }
+    }
+
+    @EqualsAndHashCode
+    @RequiredArgsConstructor(staticName = "of")
+    private static class ZonedDateTimePattern implements Pattern {
+        private final String zoneFormatter;
+        private final DateTimePattern dateTimePattern;
+
+        public void build(StringBuilder format) {
+            dateTimePattern.build(format);
+            format.append(zoneFormatter);
+        }
     }
 }

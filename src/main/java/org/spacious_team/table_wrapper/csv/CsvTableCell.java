@@ -21,6 +21,7 @@ package org.spacious_team.table_wrapper.csv;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
 
@@ -28,7 +29,8 @@ import java.util.Objects;
 
 import static lombok.AccessLevel.PACKAGE;
 
-@EqualsAndHashCode(of = {"rowAndIndex"}, callSuper = false)
+@ToString(of = "rowAndIndex")
+@EqualsAndHashCode(of = "rowAndIndex", callSuper = false)
 public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
 
     @Getter(PACKAGE)
@@ -57,6 +59,7 @@ public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
     }
 
     @RequiredArgsConstructor
+    @ToString(of = "columnIndex")
     static final class RowAndIndex {
         private final String[] row;
         @Getter

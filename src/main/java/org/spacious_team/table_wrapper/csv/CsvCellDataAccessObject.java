@@ -18,6 +18,8 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
 import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
@@ -25,10 +27,14 @@ import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode
 public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex, CsvTableRow> {
     public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject();
     /**
@@ -58,18 +64,40 @@ public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex
         return cell.getValue();
     }
 
+    /**
+     * Parses Instant. Date time format can be derived from cell value.
+     *
+     * @implSpec If cell value doesn't contain zone name, when configured one used.
+     * If cell value doesn't contain time part 12:00:00 at specified zone is used.
+     * Cell value should contain date part.
+     */
     @Override
     public Instant getInstantValue(RowAndIndex cell) {
         @Nullable String value = getValue(cell);
         Objects.requireNonNull(value, "Not an instant");
-        DateTimeFormatter formatter = (dateTimeFormatter != null) ?
+        int length = value.length();
+        if (length == 10) {
+            DateTimeFormatter formatter = getDateTimeFormatter(value);
+            return LocalDate.parse(value, formatter)
+                    .atTime(LocalTime.NOON)
+                    .atZone(defaultZone == null ? ZoneId.systemDefault() : defaultZone)
+                    .toInstant();
+        } else if (length == 18) {
+            DateTimeFormatter formatter = getDateTimeFormatter(value);
+            return LocalDateTime.parse(value, formatter)
+                    .atZone(defaultZone == null ? ZoneId.systemDefault() : defaultZone)
+                    .toInstant();
+        } else if (length > 18) {
+            DateTimeFormatter formatter = getDateTimeFormatter(value);
+            return ZonedDateTime.parse(value, formatter)
+                    .toInstant();
+        }
+        throw new IllegalArgumentException("Not an instant: " + value);
+    }
+
+    private DateTimeFormatter getDateTimeFormatter(String value) {
+        return (dateTimeFormatter != null) ?
                 dateTimeFormatter :
                 DateTimeFormatParser.getFor(value);
-        LocalDateTime dateTime = (value.length() == 10) ?
-                LocalDate.parse(value, formatter).atTime(12, 0) : //TODO formatter can parse time and zone
-                LocalDateTime.parse(value, formatter);
-        return dateTime
-                .atZone(defaultZone == null ? ZoneId.systemDefault() : defaultZone)
-                .toInstant();
     }
 }

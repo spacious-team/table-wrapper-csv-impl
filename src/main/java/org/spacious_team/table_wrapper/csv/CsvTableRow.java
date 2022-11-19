@@ -20,6 +20,7 @@ package org.spacious_team.table_wrapper.csv;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPageRow;
 import org.spacious_team.table_wrapper.api.TableCell;
@@ -30,7 +31,8 @@ import java.util.NoSuchElementException;
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate;
 
-@EqualsAndHashCode(of ={"row", "rowNum"}, callSuper = false)
+@ToString(of = "rowNum")
+@EqualsAndHashCode(of = "rowNum", callSuper = false)
 public class CsvTableRow extends AbstractReportPageRow {
 
     private final String[] row;
