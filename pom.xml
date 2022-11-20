@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.github.spacious-team</groupId>
             <artifactId>table-wrapper-api</artifactId>
-            <version>24d52702c5</version>
+            <version>bb75bf7a00</version>
         </dependency>
         <dependency>
             <groupId>com.univocity</groupId>

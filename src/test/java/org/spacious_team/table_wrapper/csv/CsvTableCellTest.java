@@ -21,6 +21,7 @@ package org.spacious_team.table_wrapper.csv;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.spacious_team.table_wrapper.api.InstantParser;
 
 import java.math.BigDecimal;
 import java.time.Instant;

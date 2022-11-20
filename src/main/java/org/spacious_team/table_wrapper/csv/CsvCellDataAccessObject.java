@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
+import org.spacious_team.table_wrapper.api.InstantParser;
 import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import java.time.Instant;
