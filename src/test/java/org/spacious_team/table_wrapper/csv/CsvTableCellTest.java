@@ -149,10 +149,11 @@ class CsvTableCellTest {
     @ValueSource(strings = "2022-10-11T03:01:00+03:00")
     void getInstantValueWithFormat(String dateTime) {
         ZoneId zoneId = ZoneOffset.systemDefault();
-        CsvCellDataAccessObject dao = CsvCellDataAccessObject.builder()
+        InstantParser instantParser = InstantParser.builder()
                 .dateTimeFormatter(DateTimeFormatter.ISO_DATE_TIME)
                 .defaultZoneId(zoneId)
                 .build();
+        CsvCellDataAccessObject dao = CsvCellDataAccessObject.of(instantParser);
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1)
                 .atZone(zoneId)
