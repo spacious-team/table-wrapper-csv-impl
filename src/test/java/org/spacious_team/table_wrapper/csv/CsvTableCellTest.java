@@ -147,9 +147,9 @@ class CsvTableCellTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = "2022-10-11T03:01:00+03:00")
+    @ValueSource(strings = "2022-10-11T03:01:00")
     void getInstantValueWithFormat(String dateTime) {
-        ZoneId zoneId = ZoneOffset.systemDefault();
+        ZoneId zoneId = ZoneOffset.ofHours(3);
         InstantParser instantParser = InstantParser.builder()
                 .dateTimeFormatter(DateTimeFormatter.ISO_DATE_TIME)
                 .defaultZoneId(zoneId)
