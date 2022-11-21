@@ -41,10 +41,17 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     private final String[][] rows;
 
     /**
-     * Field and line delimiter detected automatically. UTF-8 encoding file expected.
+     * Field and line delimiter detected automatically. UTF-8 encoded file expected.
      */
     public CsvReportPage(Path path) throws IOException {
-        this(Files.newInputStream(path, StandardOpenOption.READ), UTF_8, getDefaultCsvParserSettings());
+        this(Files.newInputStream(path, StandardOpenOption.READ));
+    }
+
+    /**
+     * Closes inputStream if success. UTF-8 encoded stream data expected.
+     */
+    public CsvReportPage(InputStream inputStream) throws IOException {
+        this(inputStream, UTF_8, getDefaultCsvParserSettings());
     }
 
     /**
@@ -79,7 +86,7 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
 
     @Override
     public @Nullable CsvTableRow getRow(int i) {
-        return (i >= rows.length) ? null : new CsvTableRow(rows[i], i);
+        return (i < 0 || i >= rows.length) ? null : new CsvTableRow(rows[i], i);
     }
 
     @Override
