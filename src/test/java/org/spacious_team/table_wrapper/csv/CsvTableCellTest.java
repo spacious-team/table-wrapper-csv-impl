@@ -126,7 +126,7 @@ class CsvTableCellTest {
     void getInstantValueWithDate(String date) {
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(12, 0)
-                .atZone(ZoneOffset.systemDefault())
+                .atZone(ZoneId.systemDefault())
                 .toInstant();
         String[] row = new String[]{date};
         CsvTableCell cell = CsvTableCell.of(row, 0);
@@ -139,7 +139,7 @@ class CsvTableCellTest {
     void getInstantValueWithDateTime(String dateTime) {
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1)
-                .atZone(ZoneOffset.systemDefault())
+                .atZone(ZoneId.systemDefault())
                 .toInstant();
         String[] row = new String[]{dateTime};
         CsvTableCell cell = CsvTableCell.of(row, 0);

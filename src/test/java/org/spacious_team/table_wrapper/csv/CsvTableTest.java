@@ -27,6 +27,8 @@ import org.spacious_team.table_wrapper.api.TableCellRange;
 import org.spacious_team.table_wrapper.api.TableColumn;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 
+import java.time.ZoneId;
+
 import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,7 +85,8 @@ class CsvTableTest {
     void testToString() {
         assertEquals("CsvTable(super=AbstractTable(tableName=table name), " +
                         "cellDataAccessObject=CsvCellDataAccessObject(instantParser=InstantParser(" +
-                        "dateTimeFormatter=null, defaultDate=null, defaultTime=12:00, defaultZoneId=Europe/Moscow)))",
+                        "dateTimeFormatter=null, defaultDate=null, defaultTime=12:00, defaultZoneId=" +
+                        ZoneId.systemDefault() + ")))",
                 csvTable.toString());
     }
 
