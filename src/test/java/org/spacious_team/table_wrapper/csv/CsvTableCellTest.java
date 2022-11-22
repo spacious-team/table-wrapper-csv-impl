@@ -18,10 +18,12 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.spacious_team.table_wrapper.api.InstantParser;
+import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -31,6 +33,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -176,18 +179,18 @@ class CsvTableCellTest {
     }
 
     @Test
-    void equals() {
-        String[] row = new String[]{"abc", "abc"};
-        assertEquals(
-                CsvTableCell.of(row, 0),
-                CsvTableCell.of(row, 1));
+    void testEqualsAndHashCode() {
+        EqualsVerifier
+                .forClass(CsvTableCell.class)
+                .suppress(STRICT_INHERITANCE) // no subclass for test
+                .verify();
     }
 
     @Test
-    void testHashCode() {
-        String[] row = new String[]{"abc", "abc"};
-        assertEquals(
-                CsvTableCell.of(row, 0).hashCode(),
-                CsvTableCell.of(row, 1).hashCode());
+    void testToString() {
+        RowAndIndex rowAndIndex = new RowAndIndex(new String[]{"data"}, 0);
+        CsvTableCell cell = new CsvTableCell(rowAndIndex);
+        assertEquals("CsvTableCell(rowAndIndex=CsvTableCell.RowAndIndex(value=data))",
+                cell.toString());
     }
 }

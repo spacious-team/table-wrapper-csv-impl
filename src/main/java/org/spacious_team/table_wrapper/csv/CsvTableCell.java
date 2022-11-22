@@ -59,7 +59,6 @@ public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
     }
 
     @RequiredArgsConstructor
-    @ToString(of = "columnIndex")
     static final class RowAndIndex {
         private final String[] row;
         @Getter
@@ -90,6 +89,11 @@ public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
         @Override
         public int hashCode() {
             return Objects.hashCode(getValue());
+        }
+
+        @Override
+        public String toString() {
+            return "CsvTableCell.RowAndIndex(value=" + getValue() + ")";
         }
     }
 }
