@@ -41,7 +41,11 @@ public class CsvTableRow extends AbstractReportPageRow {
     private final int rowNum;
     private final CsvTableCell[] cellsCache;
 
-    public CsvTableRow(String[] row, int rowNum) {
+    public static CsvTableRow of(String[] row, int rowNum) {
+        return new CsvTableRow(row, rowNum);
+    }
+
+    private CsvTableRow(String[] row, int rowNum) {
         this.row = row;
         this.rowNum = rowNum;
         this.cellsCache = new CsvTableCell[row.length];
@@ -49,7 +53,7 @@ public class CsvTableRow extends AbstractReportPageRow {
 
     @Override
     public @Nullable CsvTableCell getCell(int i) {
-        if (i >= row.length) {
+        if (i < 0 || i >= row.length) {
             return null;
         }
         CsvTableCell cell = cellsCache[i];
@@ -58,6 +62,10 @@ public class CsvTableRow extends AbstractReportPageRow {
             cellsCache[i] = cell;
         }
         return cell;
+    }
+
+    @Nullable String getCellValue(int i) {
+        return (i < 0 || i >= row.length) ? null : row[i];
     }
 
     @Override

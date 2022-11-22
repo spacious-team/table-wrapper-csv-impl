@@ -25,7 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.spacious_team.table_wrapper.api.InstantParser;
-import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import static java.time.ZoneOffset.UTC;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
@@ -39,8 +38,6 @@ class CsvCellDataAccessObjectTest {
     InstantParser instantParser;
     @Mock
     CsvTableRow row;
-    @Mock
-    CsvTableCell cell;
 
     @BeforeEach
     void setUp() {
@@ -50,37 +47,35 @@ class CsvCellDataAccessObjectTest {
 
     @Test
     void getCellNull() {
+        //noinspection ConstantConditions
+        assertNull(dao.getCell(row, null));
         assertNull(dao.getCell(row, 1));
     }
 
     @Test
     void getCellNonNull() {
-        //noinspection ConstantConditions
-        when(row.getCell(1)).thenReturn(cell);
-        dao.getCell(row, 1);
-        verify(cell).getRowAndIndex();
+        String expected = "data";
+        CsvTableRow row = CsvTableRow.of(new String[]{"", expected}, 1);
+        assertEquals(expected, dao.getCell(row, 1));
     }
 
     @Test
     void getValue() {
-        RowAndIndex rowAndIndex = new RowAndIndex(new String[]{"test"}, 0);
-        assertEquals("test", dao.getValue(rowAndIndex));
+        assertEquals("test", dao.getValue("test"));
     }
 
     @Test
     void getInstantValueNull() {
-        RowAndIndex rowAndIndex = new RowAndIndex(new String[0], 1);
-        assertThrows(NullPointerException.class, () -> dao.getInstantValue(rowAndIndex));
+        assertThrows(NullPointerException.class, () -> dao.getInstantValue(null));
     }
 
     @Test
     void getInstant() {
         String actual = "test";
-        RowAndIndex rowAndIndex = new RowAndIndex(new String[]{actual}, 0);
 
-        dao.getInstantValue(rowAndIndex);
+        dao.getInstantValue(actual);
 
-        verify(dao).getValue(rowAndIndex);
+        verify(dao).getValue(actual);
         verify(instantParser).parseInstant(actual);
     }
 

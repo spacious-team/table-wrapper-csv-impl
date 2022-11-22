@@ -51,7 +51,7 @@ class CsvTableRowTest {
     @ParameterizedTest
     @MethodSource("getRowNumRowColNum")
     void getCell(int rowNum, String[] row, int colNum) {
-        CsvTableRow csvTableRow = new CsvTableRow(row, rowNum);
+        CsvTableRow csvTableRow = CsvTableRow.of(row, rowNum);
         if (colNum >= row.length) {
             assertNull(csvTableRow.getCell(colNum));
         } else {
@@ -63,14 +63,14 @@ class CsvTableRowTest {
     @ParameterizedTest
     @MethodSource("getRowNumRowColNum")
     void getRowNum(int rowNum, String[] row) {
-        CsvTableRow csvTableRow = new CsvTableRow(row, rowNum);
+        CsvTableRow csvTableRow = CsvTableRow.of(row, rowNum);
         assertEquals(rowNum, csvTableRow.getRowNum());
     }
 
     @ParameterizedTest
     @MethodSource("getRowNumRowColNum")
     void getFirstCellNum(int rowNum, String[] row) {
-        CsvTableRow csv = new CsvTableRow(row, rowNum);
+        CsvTableRow csv = CsvTableRow.of(row, rowNum);
         if (row.length == 0) {
             assertEquals(-1, csv.getFirstCellNum());
         } else {
@@ -81,7 +81,7 @@ class CsvTableRowTest {
     @ParameterizedTest
     @MethodSource("getRowNumRowColNum")
     void getLastCellNum(int rowNum, String[] row) {
-        CsvTableRow csv = new CsvTableRow(row, rowNum);
+        CsvTableRow csv = CsvTableRow.of(row, rowNum);
         assertEquals(row.length - 1, csv.getLastCellNum());
     }
 
@@ -89,7 +89,7 @@ class CsvTableRowTest {
     @SuppressWarnings("ConstantConditions")
     void rowContains() {
         String[] row = new String[]{null, "1", "2.1", "2.20", "abc", "2020-01-01T01:02:03"};
-        CsvTableRow csvTableRow = new CsvTableRow(row, 0);
+        CsvTableRow csvTableRow = CsvTableRow.of(row, 0);
         assertTrue(csvTableRow.rowContains(null));
         assertTrue(csvTableRow.rowContains(1));
         assertTrue(csvTableRow.rowContains(2.1D));
@@ -103,7 +103,7 @@ class CsvTableRowTest {
     void iterator() {
         @SuppressWarnings("ConstantConditions")
         String[] row = new String[]{null, "1", "2.1", "2.20", "abc", "2020-01-01T01:02:03"};
-        CsvTableRow csvTableRow = new CsvTableRow(row, 0);
+        CsvTableRow csvTableRow = CsvTableRow.of(row, 0);
         List<CsvTableCell> expected = IntStream.range(0, row.length)
                 .mapToObj(colNum -> CsvTableCell.of(row, colNum))
                 .collect(Collectors.toList());
@@ -118,7 +118,7 @@ class CsvTableRowTest {
     void iteratorThrows() {
         @SuppressWarnings("ConstantConditions")
         String[] row = new String[]{null, "1"};
-        CsvTableRow csvTableRow = new CsvTableRow(row, 0);
+        CsvTableRow csvTableRow = CsvTableRow.of(row, 0);
         Iterator<@Nullable TableCell> it = csvTableRow.iterator();
         //noinspection ConstantConditions
         assertNull(it.next().getValue());
@@ -131,14 +131,14 @@ class CsvTableRowTest {
     void equals() {
         String[] row1 = new String[]{"1", "2"};
         String[] row2 = new String[]{"1", "2"};
-        assertEquals(new CsvTableRow(row1, 0), new CsvTableRow(row2, 0));
-        assertNotEquals(new CsvTableRow(row1, 0), new CsvTableRow(row1, 1));
+        assertEquals(CsvTableRow.of(row1, 0), CsvTableRow.of(row2, 0));
+        assertNotEquals(CsvTableRow.of(row1, 0), CsvTableRow.of(row1, 1));
     }
 
     @Test
     void testHashCode() {
         String[] row1 = new String[]{"1", "2"};
         String[] row2 = new String[]{"1", "2"};
-        assertEquals(new CsvTableRow(row1, 0).hashCode(), new CsvTableRow(row2, 0).hashCode());
+        assertEquals(CsvTableRow.of(row1, 0).hashCode(), CsvTableRow.of(row2, 0).hashCode());
     }
 }

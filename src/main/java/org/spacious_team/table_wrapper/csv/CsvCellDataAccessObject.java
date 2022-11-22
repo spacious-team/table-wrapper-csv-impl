@@ -24,7 +24,6 @@ import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
 import org.spacious_team.table_wrapper.api.InstantParser;
-import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -33,24 +32,24 @@ import java.util.Objects;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(staticName = "of")
-public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex, CsvTableRow> {
+public class CsvCellDataAccessObject implements CellDataAccessObject<String, CsvTableRow> {
     public static final CsvCellDataAccessObject INSTANCE = CsvCellDataAccessObject.of(
             InstantParser.builder().defaultTime(LocalTime.NOON).build());
     private final InstantParser instantParser;
 
     @Override
-    public @Nullable RowAndIndex getCell(CsvTableRow row, Integer cellIndex) {
-        @Nullable CsvTableCell cell = row.getCell(cellIndex);
-        return (cell == null) ? null : cell.getRowAndIndex();
+    public @Nullable String getCell(CsvTableRow row, Integer cellIndex) {
+        //noinspection ConstantConditions
+        return (cellIndex == null) ? null : row.getCellValue(cellIndex);
     }
 
     @Override
-    public @Nullable String getValue(RowAndIndex cell) {
-        return cell.getValue();
+    public @Nullable String getValue(@Nullable String cell) {
+        return cell;
     }
 
     @Override
-    public Instant getInstantValue(RowAndIndex cell) {
+    public Instant getInstantValue(@Nullable String cell) {
         @Nullable String value = getValue(cell);
         Objects.requireNonNull(value, "Not an instant");
         return instantParser.parseInstant(value);

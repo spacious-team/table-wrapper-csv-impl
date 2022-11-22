@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.spacious_team.table_wrapper.api.InstantParser;
-import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -33,6 +32,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+import static nl.jqno.equalsverifier.Warning.ALL_FIELDS_SHOULD_BE_USED;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class CsvTableCellTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3})
+    @ValueSource(ints = {-1, 0, 1, 2, 3})
     void getColumnIndex(int colNum) {
         String[] row = new String[2];
         CsvTableCell cell = CsvTableCell.of(row, colNum);
@@ -183,14 +183,14 @@ class CsvTableCellTest {
         EqualsVerifier
                 .forClass(CsvTableCell.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
+                .suppress(ALL_FIELDS_SHOULD_BE_USED)
                 .verify();
     }
 
     @Test
     void testToString() {
-        RowAndIndex rowAndIndex = new RowAndIndex(new String[]{"data"}, 0);
-        CsvTableCell cell = new CsvTableCell(rowAndIndex);
-        assertEquals("CsvTableCell(rowAndIndex=CsvTableCell.RowAndIndex(value=data))",
+        CsvTableCell cell = CsvTableCell.of(new String[]{"data"}, 0);
+        assertEquals("CsvTableCell(columnIndex=0, value=data)",
                 cell.toString());
     }
 }

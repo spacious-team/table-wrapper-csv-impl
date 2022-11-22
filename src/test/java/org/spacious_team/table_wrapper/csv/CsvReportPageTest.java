@@ -60,8 +60,8 @@ class CsvReportPageTest {
         };
         CsvReportPage reportPage = new CsvReportPage(rows);
 
-        assertEquals(new CsvTableRow(rows[0], 0), reportPage.getRow(0));
-        assertEquals(new CsvTableRow(rows[1], 1), reportPage.getRow(1));
+        assertEquals(CsvTableRow.of(rows[0], 0), reportPage.getRow(0));
+        assertEquals(CsvTableRow.of(rows[1], 1), reportPage.getRow(1));
         assertNull(reportPage.getRow(2));
         assertNull(reportPage.getRow(-1));
     }
