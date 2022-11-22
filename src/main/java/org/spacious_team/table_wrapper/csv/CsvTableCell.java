@@ -24,11 +24,11 @@ import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
 
-@Getter
 @ToString
 @EqualsAndHashCode(of = "value", callSuper = false)
 public class CsvTableCell extends AbstractTableCell<String> {
 
+    @Getter
     private final int columnIndex;
     private final @Nullable String value;
 
