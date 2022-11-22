@@ -90,7 +90,8 @@ class CsvCellDataAccessObjectTest {
     @Test
     void testToString() {
         InstantParser instantParser = InstantParser.builder().defaultZoneId(UTC).build();
-        assertEquals("CsvCellDataAccessObject(instantParser=InstantParser(dateTimeFormatter=null, defaultDate=null, defaultTime=00:00, defaultZoneId=Z))",
+        assertEquals("CsvCellDataAccessObject(instantParser=InstantParser(" +
+                        "dateTimeFormatter=null, defaultDate=null, defaultTime=00:00, defaultZoneId=Z))",
                 CsvCellDataAccessObject.of(instantParser).toString());
     }
 }
