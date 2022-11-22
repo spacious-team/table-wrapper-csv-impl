@@ -18,40 +18,54 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPageRow;
 import org.spacious_team.table_wrapper.api.TableCell;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate;
 
+@ToString(of = "rowNum")
+@EqualsAndHashCode(of = "rowNum", callSuper = false)
 public class CsvTableRow extends AbstractReportPageRow {
 
     private final String[] row;
 
     @Getter
     private final int rowNum;
-    private final CsvTableCell[] cellsCache;
+    private final TableCell[] cellsCache;
 
-    public CsvTableRow(String[] row, int rowNum) {
+    public static CsvTableRow of(String[] row, int rowNum) {
+        return new CsvTableRow(row, rowNum);
+    }
+
+    private CsvTableRow(String[] row, int rowNum) {
         this.row = row;
         this.rowNum = rowNum;
-        this.cellsCache = new CsvTableCell[row.length];
+        this.cellsCache = new TableCell[row.length];
     }
 
     @Override
-    public CsvTableCell getCell(int i) {
-        if (i >= row.length) {
+    public @Nullable TableCell getCell(int i) {
+        if (i < 0 || i >= row.length) {
             return null;
         }
-        CsvTableCell cell = cellsCache[i];
+        TableCell cell = cellsCache[i];
         if (cell == null) {
             cell = CsvTableCell.of(row, i);
             cellsCache[i] = cell;
         }
         return cell;
+    }
+
+    @Nullable String getCellValue(int i) {
+        return (i < 0 || i >= row.length) ? null : row[i];
     }
 
     @Override
@@ -70,8 +84,8 @@ public class CsvTableRow extends AbstractReportPageRow {
     }
 
     @Override
-    public Iterator<TableCell> iterator() {
-        return new Iterator<>() {
+    public Iterator<@Nullable TableCell> iterator() {
+        return new Iterator<@Nullable TableCell>() {
             private int cellIndex = 0;
 
             @Override
@@ -80,8 +94,11 @@ public class CsvTableRow extends AbstractReportPageRow {
             }
 
             @Override
-            public TableCell next() {
-                return getCell(cellIndex++);
+            public @Nullable TableCell next() {
+                if (hasNext()) {
+                    return getCell(cellIndex++);
+                }
+                throw new NoSuchElementException();
             }
         };
     }

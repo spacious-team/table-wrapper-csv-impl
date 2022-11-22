@@ -20,63 +20,40 @@ package org.spacious_team.table_wrapper.csv;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
+import org.spacious_team.table_wrapper.api.EmptyTableCell;
+import org.spacious_team.table_wrapper.api.TableCell;
 
-import java.util.Objects;
+@ToString
+@EqualsAndHashCode(of = "value", callSuper = false)
+public class CsvTableCell extends AbstractTableCell<String> {
 
-import static lombok.AccessLevel.PACKAGE;
+    @Getter
+    private final int columnIndex;
+    private final String value;
 
-@EqualsAndHashCode(of = {"rowAndIndex"}, callSuper = false)
-public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
-
-    @Getter(PACKAGE)
-    private final RowAndIndex rowAndIndex;
-
-    public static CsvTableCell of(String[] row, int columnIndex) {
-        return new CsvTableCell(new RowAndIndex(row, columnIndex));
+    public static TableCell of(String[] row, int columnIndex) {
+        return of(row, columnIndex, CsvCellDataAccessObject.INSTANCE);
     }
 
-    public CsvTableCell(RowAndIndex rowAndIndex) {
-        super(rowAndIndex, CsvCellDataAccessObject.INSTANCE);
-        this.rowAndIndex = rowAndIndex;
+    public static TableCell of(String[] row, int columnIndex, CsvCellDataAccessObject dao) {
+        @Nullable String cellValue = getCellValue(row, columnIndex);
+        return cellValue == null ?
+                EmptyTableCell.of(columnIndex) :
+                new CsvTableCell(cellValue, columnIndex, dao);
     }
 
-    @Override
-    public int getColumnIndex() {
-        return rowAndIndex.getColumnIndex();
+    private static @Nullable String getCellValue(String[] row, int columnIndex) {
+        return (columnIndex >= 0) && (columnIndex < row.length) ?
+                row[columnIndex] :
+                null;
     }
 
-    @RequiredArgsConstructor
-    static final class RowAndIndex {
-        private final String[] row;
-        @Getter
-        private final int columnIndex;
-
-        String getValue() {
-            return checkIndex() ? row[columnIndex] : null;
-        }
-
-        private boolean checkIndex() {
-            return columnIndex >= 0 && columnIndex < row.length;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            } else if (!(obj instanceof RowAndIndex)) {
-                return false;
-            }
-            RowAndIndex other = (RowAndIndex) obj;
-            return checkIndex() &&
-                    other.checkIndex() &&
-                    Objects.equals(getValue(), other.getValue());
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(getValue());
-        }
+    private CsvTableCell(String cellValue, int columnIndex, CsvCellDataAccessObject dao) {
+        super(cellValue, dao);
+        this.value = cellValue;
+        this.columnIndex = columnIndex;
     }
 }

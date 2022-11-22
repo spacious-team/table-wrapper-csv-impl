@@ -18,44 +18,40 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.CellDataAccessObject;
-import org.spacious_team.table_wrapper.csv.CsvTableCell.RowAndIndex;
+import org.spacious_team.table_wrapper.api.InstantParser;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
+import java.util.Objects;
 
-public class CsvCellDataAccessObject implements CellDataAccessObject<RowAndIndex, CsvTableRow> {
-    public static final CsvCellDataAccessObject INSTANCE = new CsvCellDataAccessObject();
-    @Setter
-    @Getter
-    public static DateTimeFormatter dateTimeFormatter = null;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(staticName = "of")
+public class CsvCellDataAccessObject implements CellDataAccessObject<String, CsvTableRow> {
+    public static final CsvCellDataAccessObject INSTANCE = CsvCellDataAccessObject.of(
+            InstantParser.builder().defaultTime(LocalTime.NOON).build());
+    private final InstantParser instantParser;
 
     @Override
-    public RowAndIndex getCell(CsvTableRow row, Integer cellIndex) {
-        return row.getCell(cellIndex).getRowAndIndex();
+    public @Nullable String getCell(CsvTableRow row, Integer cellIndex) {
+        //noinspection ConstantConditions
+        return (cellIndex == null) ? null : row.getCellValue(cellIndex);
     }
 
     @Override
-    public String getValue(RowAndIndex cell) {
-        return cell.getValue();
+    public @Nullable String getValue(@Nullable String cell) {
+        return cell;
     }
 
     @Override
-    public Instant getInstantValue(RowAndIndex cell) {
-        String value = getValue(cell);
-        DateTimeFormatter formatter = (dateTimeFormatter != null) ?
-                dateTimeFormatter :
-                DateTimeFormatParser.getFor(value);
-        LocalDateTime dateTime = (value.length() == 10) ?
-                LocalDate.parse(value, formatter).atTime(12, 0) :
-                LocalDateTime.parse(value, formatter);
-        return dateTime
-                .atZone(ZoneOffset.systemDefault())
-                .toInstant();
+    public Instant getInstantValue(@Nullable String cell) {
+        @Nullable String value = getValue(cell);
+        Objects.requireNonNull(value, "Not an instant");
+        return instantParser.parseInstant(value);
     }
 }
