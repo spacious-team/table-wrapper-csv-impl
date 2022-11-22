@@ -59,7 +59,7 @@ class CsvTableRowTest {
         if (colNum < 0 || colNum >= row.length) {
             assertNull(csvTableRow.getCell(colNum));
         } else {
-            CsvTableCell expected = CsvTableCell.of(row, colNum);
+            TableCell expected = CsvTableCell.of(row, colNum);
             assertEquals(expected, csvTableRow.getCell(colNum));
             assertSame(csvTableRow.getCell(colNum), csvTableRow.getCell(colNum)); // next call returns same instant
         }
@@ -120,7 +120,7 @@ class CsvTableRowTest {
         @SuppressWarnings("ConstantConditions")
         String[] row = new String[]{null, "1", "2.1", "2.20", "abc", "2020-01-01T01:02:03"};
         CsvTableRow csvTableRow = CsvTableRow.of(row, 0);
-        List<CsvTableCell> expected = IntStream.range(0, row.length)
+        List<TableCell> expected = IntStream.range(0, row.length)
                 .mapToObj(colNum -> CsvTableCell.of(row, colNum))
                 .collect(Collectors.toList());
         List<TableCell> actual = StreamSupport.stream(

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.spacious_team.table_wrapper.api.InstantParser;
+import org.spacious_team.table_wrapper.api.TableCell;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -43,53 +44,53 @@ class CsvTableCellTest {
     @ValueSource(ints = {-1, 0, 1, 2, 3})
     void getColumnIndex(int colNum) {
         String[] row = new String[2];
-        CsvTableCell cell = CsvTableCell.of(row, colNum);
+        TableCell cell = CsvTableCell.of(row, colNum);
         assertEquals(colNum, cell.getColumnIndex());
     }
 
     @Test
     void getValue() {
         String[] row = new String[]{"object1", "object2"};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals("object1", cell.getValue());
 
-        CsvTableCell notEqualsCell = CsvTableCell.of(row, 1);
+        TableCell notEqualsCell = CsvTableCell.of(row, 1);
         assertNotEquals(notEqualsCell.getValue(), cell.getValue());
     }
 
     @Test
     void getIntValue() {
         String[] row = new String[]{"1024", "1025"};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(1024, cell.getIntValue());
 
-        CsvTableCell notEqualsCell = CsvTableCell.of(row, 1);
+        TableCell notEqualsCell = CsvTableCell.of(row, 1);
         assertNotEquals(notEqualsCell.getIntValue(), cell.getIntValue());
     }
 
     @Test
     void getLongValue() {
         String[] row = new String[]{"1024", "1025"};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(1024L, cell.getLongValue());
 
-        CsvTableCell notEqualsCell = CsvTableCell.of(row, 1);
+        TableCell notEqualsCell = CsvTableCell.of(row, 1);
         assertNotEquals(notEqualsCell.getLongValue(), cell.getLongValue());
     }
 
     @Test
     void getDoubleValue() {
         String[] row = new String[]{"10.24", "10.24000", "10.2400000000000000000000000000000000001", "10.24001"};
-        CsvTableCell cell0 = CsvTableCell.of(row, 0);
+        TableCell cell0 = CsvTableCell.of(row, 0);
         assertEquals(10.24D, cell0.getDoubleValue());
 
-        CsvTableCell cell1 = CsvTableCell.of(row, 1);
+        TableCell cell1 = CsvTableCell.of(row, 1);
         assertEquals(10.24D, cell1.getDoubleValue());
 
-        CsvTableCell cell2 = CsvTableCell.of(row, 2);
+        TableCell cell2 = CsvTableCell.of(row, 2);
         assertEquals(10.24D, cell2.getDoubleValue());
 
-        CsvTableCell cell3 = CsvTableCell.of(row, 3);
+        TableCell cell3 = CsvTableCell.of(row, 3);
         assertNotEquals(cell2.getDoubleValue(), cell3.getDoubleValue());
     }
 
@@ -101,9 +102,9 @@ class CsvTableCellTest {
         BigDecimal expected = new BigDecimal("10.24");
         String[] row = new String[]{"10.24", "10.24000", "10.2400000000000000000000000000000000001"};
 
-        CsvTableCell cell0 = CsvTableCell.of(row, 0);
-        CsvTableCell cell1 = CsvTableCell.of(row, 1);
-        CsvTableCell cell2 = CsvTableCell.of(row, 2);
+        TableCell cell0 = CsvTableCell.of(row, 0);
+        TableCell cell1 = CsvTableCell.of(row, 1);
+        TableCell cell2 = CsvTableCell.of(row, 2);
 
         assertEquals(expected, cell0.getBigDecimalValue());
         assertNotEquals(expected, cell1.getBigDecimalValue());
@@ -117,10 +118,10 @@ class CsvTableCellTest {
     @Test
     void getStringValue() {
         String[] row = new String[]{"object1", "object2"};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals("object1", cell.getStringValue());
 
-        CsvTableCell notEqualsCell = CsvTableCell.of(row, 1);
+        TableCell notEqualsCell = CsvTableCell.of(row, 1);
         assertNotEquals(notEqualsCell.getStringValue(), cell.getStringValue());
     }
 
@@ -132,7 +133,7 @@ class CsvTableCellTest {
                 .atZone(ZoneId.systemDefault())
                 .toInstant();
         String[] row = new String[]{date};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(expected, cell.getInstantValue());
     }
 
@@ -145,7 +146,7 @@ class CsvTableCellTest {
                 .atZone(ZoneId.systemDefault())
                 .toInstant();
         String[] row = new String[]{dateTime};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(expected, cell.getInstantValue());
     }
 
@@ -163,7 +164,7 @@ class CsvTableCellTest {
                 .atZone(zoneId)
                 .toInstant();
         String[] row = new String[]{dateTime};
-        CsvTableCell cell = CsvTableCell.of(row, 0, dao);
+        TableCell cell = CsvTableCell.of(row, 0, dao);
         assertEquals(expected, cell.getInstantValue());
     }
 
@@ -174,7 +175,7 @@ class CsvTableCellTest {
         LocalDateTime expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1);
         String[] row = new String[]{dateTime};
-        CsvTableCell cell = CsvTableCell.of(row, 0);
+        TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(expected, cell.getLocalDateTimeValue());
     }
 
@@ -189,7 +190,7 @@ class CsvTableCellTest {
 
     @Test
     void testToString() {
-        CsvTableCell cell = CsvTableCell.of(new String[]{"data"}, 0);
+        TableCell cell = CsvTableCell.of(new String[]{"data"}, 0);
         assertEquals("CsvTableCell(columnIndex=0, value=data)",
                 cell.toString());
     }

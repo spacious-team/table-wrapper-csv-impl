@@ -23,6 +23,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
+import org.spacious_team.table_wrapper.api.EmptyTableCell;
+import org.spacious_team.table_wrapper.api.TableCell;
 
 @ToString
 @EqualsAndHashCode(of = "value", callSuper = false)
@@ -30,15 +32,17 @@ public class CsvTableCell extends AbstractTableCell<String> {
 
     @Getter
     private final int columnIndex;
-    private final @Nullable String value;
+    private final String value;
 
-    public static CsvTableCell of(String[] row, int columnIndex) {
+    public static TableCell of(String[] row, int columnIndex) {
         return of(row, columnIndex, CsvCellDataAccessObject.INSTANCE);
     }
 
-    public static CsvTableCell of(String[] row, int columnIndex, CsvCellDataAccessObject dao) {
+    public static TableCell of(String[] row, int columnIndex, CsvCellDataAccessObject dao) {
         @Nullable String cellValue = getCellValue(row, columnIndex);
-        return new CsvTableCell(cellValue, columnIndex, dao);
+        return cellValue == null ?
+                EmptyTableCell.of(columnIndex) :
+                new CsvTableCell(cellValue, columnIndex, dao);
     }
 
     private static @Nullable String getCellValue(String[] row, int columnIndex) {
@@ -47,8 +51,7 @@ public class CsvTableCell extends AbstractTableCell<String> {
                 null;
     }
 
-    @SuppressWarnings({"ConstantConditions", "nullable"})
-    private CsvTableCell(@Nullable String cellValue, int columnIndex, CsvCellDataAccessObject dao) {
+    private CsvTableCell(String cellValue, int columnIndex, CsvCellDataAccessObject dao) {
         super(cellValue, dao);
         this.value = cellValue;
         this.columnIndex = columnIndex;
