@@ -47,7 +47,7 @@ public class CsvTable extends AbstractTable<CsvTableRow> {
         super(reportPage, tableName, tableRange, headerDescription, headersRowCount);
     }
 
-    public CsvTable(AbstractTable<CsvTableRow> table, int appendDataRowsToTop, int appendDataRowsToBottom) {
+    protected CsvTable(AbstractTable<CsvTableRow> table, int appendDataRowsToTop, int appendDataRowsToBottom) {
         super(table, appendDataRowsToTop, appendDataRowsToBottom);
     }
 
