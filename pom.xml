@@ -157,8 +157,7 @@
                         </annotationProcessor>
                     </annotationProcessors>
                     <compilerArgs combine.children="append">
-                        <arg>-Awarns</arg>
-                        <arg>-Astubs=jdk.astub</arg>
+                        <!--arg>-Awarns</arg-->
                         <arg>-AskipDefs=.*Test</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>

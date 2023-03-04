@@ -27,7 +27,8 @@ import org.spacious_team.table_wrapper.api.InstantParser;
 
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 @ToString
 @EqualsAndHashCode
@@ -51,7 +52,8 @@ public class CsvCellDataAccessObject implements CellDataAccessObject<String, Csv
     @Override
     public Instant getInstantValue(@Nullable String cell) {
         @Nullable String value = getValue(cell);
-        Objects.requireNonNull(value, "Not an instant");
-        return instantParser.parseInstant(value);
+        @SuppressWarnings("nullness")
+        String nonNullValue = requireNonNull(value, "Not an instant");
+        return instantParser.parseInstant(nonNullValue);
     }
 }
