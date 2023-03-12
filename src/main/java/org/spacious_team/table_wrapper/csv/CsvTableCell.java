@@ -27,7 +27,7 @@ import org.spacious_team.table_wrapper.api.EmptyTableCell;
 import org.spacious_team.table_wrapper.api.TableCell;
 
 @ToString
-@EqualsAndHashCode(of = "value", callSuper = false)
+@EqualsAndHashCode(callSuper = false)
 public class CsvTableCell extends AbstractTableCell<String> {
 
     @Getter

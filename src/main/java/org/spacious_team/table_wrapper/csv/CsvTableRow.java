@@ -32,11 +32,10 @@ import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 import static org.spacious_team.table_wrapper.csv.CsvTableHelper.equalsPredicate;
 
 @ToString(of = "rowNum")
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"rowNum", "row"}, callSuper = false)
 public class CsvTableRow extends AbstractReportPageRow {
 
     private final String[] row;
-
     @Getter
     private final int rowNum;
     private final TableCell[] cellsCache;
