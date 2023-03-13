@@ -152,7 +152,7 @@ class CsvTableCellTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"03:01:00.123 2022-10-11", "2022-10-11 03:01:00.123"})
-    void getInstantValueWithDateTimeNanos(String dateTime) {
+    void getInstantValueWithDateTimeMillis(String dateTime) {
         Instant expected = LocalDate.of(2022, 10, 11)
                 .atTime(3, 1, 0, 123000000)
                 .atZone(ZoneId.systemDefault())
