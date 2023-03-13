@@ -151,6 +151,18 @@ class CsvTableCellTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"03:01:00.123 2022-10-11", "2022-10-11 03:01:00.123"})
+    void getInstantValueWithDateTimeNanos(String dateTime) {
+        Instant expected = LocalDate.of(2022, 10, 11)
+                .atTime(3, 1, 0, 123000000)
+                .atZone(ZoneId.systemDefault())
+                .toInstant();
+        String[] row = new String[]{dateTime};
+        TableCell cell = CsvTableCell.of(row, 0);
+        assertEquals(expected, cell.getInstantValue());
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = "2022-10-11T03:01:00")
     void getInstantValueWithFormat(String dateTime) {
         ZoneId zoneId = ZoneOffset.ofHours(3);
