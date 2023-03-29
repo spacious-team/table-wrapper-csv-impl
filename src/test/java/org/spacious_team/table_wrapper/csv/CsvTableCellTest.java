@@ -35,8 +35,8 @@ import java.time.format.DateTimeFormatter;
 
 import static nl.jqno.equalsverifier.Warning.ALL_FIELDS_SHOULD_BE_USED;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class CsvTableCellTest {
 
@@ -189,6 +189,18 @@ class CsvTableCellTest {
         String[] row = new String[]{dateTime};
         TableCell cell = CsvTableCell.of(row, 0);
         assertEquals(expected, cell.getLocalDateTimeValue());
+    }
+
+    @Test
+    void createWithCellDataAccessObject() {
+        CsvTableCell cell = (CsvTableCell) CsvTableCell.of(new String[]{"test"}, 0);
+        CsvCellDataAccessObject dao = mock(CsvCellDataAccessObject.class);
+
+        CsvTableCell actual = cell.createWithCellDataAccessObject(dao);
+
+        assertNotSame(cell, actual);
+        assertNotSame(dao, cell.getCellDataAccessObject());
+        assertSame(dao, actual.getCellDataAccessObject());
     }
 
     @Test

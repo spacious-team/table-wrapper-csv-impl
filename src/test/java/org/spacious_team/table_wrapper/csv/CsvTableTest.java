@@ -65,7 +65,7 @@ class CsvTableTest {
     void subTable() {
         int addToTop = 3;
         int addToBottom = -2;
-        AbstractTable<?> subTable = (AbstractTable<?>) csvTable.subTable(addToTop, addToBottom);
+        AbstractTable<?, ?> subTable = (AbstractTable<?, ?>) csvTable.subTable(addToTop, addToBottom);
 
         assertSame(csvTable.getReportPage(), subTable.getReportPage());
         assertEquals(tableRange.addRowsToTop(addToTop).addRowsToBottom(addToBottom),

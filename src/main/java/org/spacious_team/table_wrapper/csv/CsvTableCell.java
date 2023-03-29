@@ -28,7 +28,7 @@ import org.spacious_team.table_wrapper.api.TableCell;
 
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class CsvTableCell extends AbstractTableCell<String> {
+public class CsvTableCell extends AbstractTableCell<String, CsvCellDataAccessObject> {
 
     @Getter
     private final int columnIndex;
@@ -55,5 +55,10 @@ public class CsvTableCell extends AbstractTableCell<String> {
         super(cellValue, dao);
         this.value = cellValue;
         this.columnIndex = columnIndex;
+    }
+
+    @Override
+    protected CsvTableCell createWithCellDataAccessObject(CsvCellDataAccessObject dao) {
+        return new CsvTableCell(value, columnIndex, dao);
     }
 }

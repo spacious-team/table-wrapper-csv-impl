@@ -18,7 +18,6 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,11 +31,11 @@ import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CsvTable extends AbstractTable<CsvTableRow> {
+public class CsvTable extends AbstractTable<CsvTableRow, String> {
 
     @Setter
-    @Getter(AccessLevel.PROTECTED)
-    private CellDataAccessObject<?, CsvTableRow> cellDataAccessObject = CsvCellDataAccessObject.INSTANCE;
+    @Getter
+    private CellDataAccessObject<String, CsvTableRow> cellDataAccessObject = CsvCellDataAccessObject.INSTANCE;
 
     protected <T extends Enum<T> & TableHeaderColumn>
     CsvTable(AbstractReportPage<CsvTableRow> reportPage,
@@ -47,7 +46,7 @@ public class CsvTable extends AbstractTable<CsvTableRow> {
         super(reportPage, tableName, tableRange, headerDescription, headersRowCount);
     }
 
-    protected CsvTable(AbstractTable<CsvTableRow> table, int appendDataRowsToTop, int appendDataRowsToBottom) {
+    protected CsvTable(AbstractTable<CsvTableRow, String> table, int appendDataRowsToTop, int appendDataRowsToBottom) {
         super(table, appendDataRowsToTop, appendDataRowsToBottom);
     }
 
