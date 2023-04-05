@@ -19,6 +19,7 @@
 package org.spacious_team.table_wrapper.csv;
 
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
 import java.util.Objects;
@@ -62,9 +63,9 @@ final class CsvTableHelper {
         return NOT_FOUND;
     }
 
-    @SuppressWarnings({"nullness", "ConstantConditions"})
-    static Predicate<String> equalsPredicate(Object expected) {
+    static Predicate<String> equalsPredicate(@Nullable Object expected) {
         if (expected == null) {
+            //noinspection ConstantConditions
             return Objects::isNull;
         }
         String expectedString = expected.toString();
