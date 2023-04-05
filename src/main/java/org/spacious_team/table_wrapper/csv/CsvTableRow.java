@@ -78,7 +78,7 @@ public class CsvTableRow extends AbstractReportPageRow {
     }
 
     @Override
-    public boolean rowContains(Object value) {
+    public boolean rowContains(@Nullable Object value) {
         return CsvTableHelper.find(row, rowNum, 0, row.length, equalsPredicate(value)) != NOT_FOUND;
     }
 
