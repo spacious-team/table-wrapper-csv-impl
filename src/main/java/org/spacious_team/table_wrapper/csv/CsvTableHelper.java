@@ -38,7 +38,7 @@ final class CsvTableHelper {
     }
 
     static TableCellAddress find(String[][] table, int startRow, int endRow, int startColumn, int endColumn,
-                                 Predicate<String> predicate) {
+                                 Predicate<@Nullable String> predicate) {
         startRow = Math.max(0, startRow);
         endRow = Math.min(endRow, table.length);
         for (int rowNum = startRow; rowNum < endRow; rowNum++) {
@@ -51,7 +51,8 @@ final class CsvTableHelper {
         return NOT_FOUND;
     }
 
-    static TableCellAddress find(String[] row, int rowNum, int startColumn, int endColumn, Predicate<String> predicate) {
+    static TableCellAddress find(String[] row, int rowNum, int startColumn, int endColumn,
+                                 Predicate<@Nullable String> predicate) {
         startColumn = Math.max(0, startColumn);
         endColumn = Math.min(endColumn, row.length);
         for (int i = startColumn; i < endColumn; i++) {
@@ -63,9 +64,8 @@ final class CsvTableHelper {
         return NOT_FOUND;
     }
 
-    static Predicate<String> equalsPredicate(@Nullable Object expected) {
+    static Predicate<@Nullable String> equalsPredicate(@Nullable Object expected) {
         if (expected == null) {
-            //noinspection ConstantConditions
             return Objects::isNull;
         }
         String expectedString = expected.toString();

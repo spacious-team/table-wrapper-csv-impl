@@ -80,7 +80,8 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     }
 
     @Override
-    public TableCellAddress find(int startRow, int endRow, int startColumn, int endColumn, Predicate<Object> cellValuePredicate) {
+    public TableCellAddress find(int startRow, int endRow, int startColumn, int endColumn,
+                                 Predicate<@Nullable Object> cellValuePredicate) {
         return CsvTableHelper.find(rows, startRow, endRow, startColumn, endColumn, cellValuePredicate::test);
     }
 
