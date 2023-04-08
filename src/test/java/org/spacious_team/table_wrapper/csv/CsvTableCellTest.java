@@ -33,7 +33,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import static nl.jqno.equalsverifier.Warning.ALL_FIELDS_SHOULD_BE_USED;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -208,7 +207,6 @@ class CsvTableCellTest {
         EqualsVerifier
                 .forClass(CsvTableCell.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .suppress(ALL_FIELDS_SHOULD_BE_USED)
                 .verify();
     }
 
