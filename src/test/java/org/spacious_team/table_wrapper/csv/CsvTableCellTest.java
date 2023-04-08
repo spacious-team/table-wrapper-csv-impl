@@ -190,6 +190,25 @@ class CsvTableCellTest {
         assertEquals(expected, cell.getLocalDateTimeValue());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-10-11 03:01:00", "03:01:00 11-10-2022", "11 10 2022 03:01:00",
+            "03:01:00 2022/10/11", "11.10.2022 03:01:00"})
+    void getLocalDateTimeValue_withZoneId(String dateTime) {
+        LocalDateTime expected = LocalDate.of(2022, 10, 11)
+                .atTime(3, 1);
+        String[] row = new String[]{dateTime};
+        TableCell cell = CsvTableCell.of(row, 0);
+        int offsetSeconds = ZoneId.systemDefault()
+                .getRules()
+                .getOffset(expected)
+                .getTotalSeconds();
+        ZoneId zoneIdPlusHour = ZoneOffset.ofTotalSeconds(offsetSeconds + 3600);
+
+        assertEquals(expected, cell.getLocalDateTimeValue());
+        assertEquals(expected, cell.getLocalDateTimeValue(ZoneOffset.systemDefault()));
+        assertEquals(expected.plusHours(1), cell.getLocalDateTimeValue(zoneIdPlusHour));
+    }
+
     @Test
     void createWithCellDataAccessObject() {
         CsvTableCell cell = (CsvTableCell) CsvTableCell.of(new String[]{"test"}, 0);
