@@ -31,7 +31,7 @@ import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 @NoArgsConstructor(access = PRIVATE)
 final class CsvTableHelper {
 
-    static TableCellAddress find(String[][] table, Object expected,
+    static TableCellAddress find(String[][] table, @Nullable Object expected,
                                  int startRow, int endRow,
                                  int startColumn, int endColumn) {
         return find(table, startRow, endRow, startColumn, endColumn, equalsPredicate(expected));

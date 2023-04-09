@@ -41,7 +41,6 @@ class CsvTableHelperTest {
                         Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE));
         assertEquals(TableCellAddress.of(1, 0),
                 CsvTableHelper.find(table, 11, 0, 3, 0, 2));
-        //noinspection ConstantConditions
         assertEquals(TableCellAddress.of(2, 0),
                 CsvTableHelper.find(table, null, 0, 3, 0, 2));
         assertSame(TableCellAddress.NOT_FOUND,
