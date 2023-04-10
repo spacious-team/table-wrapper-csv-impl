@@ -8,6 +8,10 @@ https://codecov.io/gh/spacious-team/table-wrapper-csv-impl)
 
 ### Назначение
 Предоставляет реализацию `Table Wrapper API` для удобного доступа к табличным данным, сохраненным в файлах формата `csv`.
+Если не используется Spring Boot Starter, то сначала в реестр доступных фабрик нужно зарегистрировать фабрику csv таблиц:
+```java
+TableFactoryRegistry.add(new CsvTableFactory());
+```
 Пример создания таблиц из файла `1.csv`
 ```java
 ReportPage reportPage = new CsvReportPage(Path.of("1.csv"));
