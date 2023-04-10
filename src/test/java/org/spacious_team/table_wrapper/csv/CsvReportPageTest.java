@@ -29,11 +29,29 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class CsvReportPageTest {
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void createFromFile() throws IOException {
+        Path path = Files.createTempFile("table-wrapper-csv-impl-test.csv", "csv");
+        try {
+            Files.writeString(path, "0,1");
+            CsvReportPage reportPage = new CsvReportPage(path);
+
+            @Nullable CsvTableRow row = reportPage.getRow(0);
+            assertEquals("0", row.getCell(0).getValue());
+            assertEquals("1", row.getCell(1).getValue());
+        } finally {
+            Files.delete(path);
+        }
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"UTF-8", "Windows-1251"})
