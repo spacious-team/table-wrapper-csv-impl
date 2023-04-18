@@ -18,6 +18,7 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.ToString;
 import org.spacious_team.table_wrapper.api.AbstractTableFactory;
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
@@ -25,6 +26,7 @@ import org.spacious_team.table_wrapper.api.TableCellRange;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 
 @SuppressWarnings("unused")
+@ToString(callSuper = true)
 public class CsvTableFactory extends AbstractTableFactory<CsvReportPage> {
 
     public CsvTableFactory() {
