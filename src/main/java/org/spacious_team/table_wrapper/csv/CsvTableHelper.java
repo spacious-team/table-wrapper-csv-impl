@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,27 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.NoArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+import static lombok.AccessLevel.PRIVATE;
 import static org.spacious_team.table_wrapper.api.TableCellAddress.NOT_FOUND;
 
-class CsvTableHelper {
+@NoArgsConstructor(access = PRIVATE)
+final class CsvTableHelper {
 
-    static TableCellAddress find(String[][] table, Object expected,
+    static TableCellAddress find(String[][] table, @Nullable Object expected,
                                  int startRow, int endRow,
                                  int startColumn, int endColumn) {
         return find(table, startRow, endRow, startColumn, endColumn, equalsPredicate(expected));
     }
 
     static TableCellAddress find(String[][] table, int startRow, int endRow, int startColumn, int endColumn,
-                                 Predicate<String> predicate) {
+                                 Predicate<@Nullable String> predicate) {
         startRow = Math.max(0, startRow);
         endRow = Math.min(endRow, table.length);
         for (int rowNum = startRow; rowNum < endRow; rowNum++) {
@@ -48,19 +51,20 @@ class CsvTableHelper {
         return NOT_FOUND;
     }
 
-    static TableCellAddress find(String[] row, int rowNum, int startColumn, int endColumn, Predicate<String> predicate) {
+    static TableCellAddress find(String[] row, int rowNum, int startColumn, int endColumn,
+                                 Predicate<@Nullable String> predicate) {
         startColumn = Math.max(0, startColumn);
         endColumn = Math.min(endColumn, row.length);
         for (int i = startColumn; i < endColumn; i++) {
             String cell = row[i];
             if (predicate.test(cell)) {
-                return new TableCellAddress(rowNum, i);
+                return TableCellAddress.of(rowNum, i);
             }
         }
         return NOT_FOUND;
     }
 
-    static Predicate<String> equalsPredicate(Object expected) {
+    static Predicate<@Nullable String> equalsPredicate(@Nullable Object expected) {
         if (expected == null) {
             return Objects::isNull;
         }

@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2022  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,9 @@
 
 package org.spacious_team.table_wrapper.csv;
 
-import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPage;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
 
@@ -33,7 +32,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -43,10 +41,17 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     private final String[][] rows;
 
     /**
-     * Field and line delimiter detected automatically. UTF-8 encoding file expected.
+     * Field and line delimiter detected automatically. UTF-8 encoded file expected.
      */
     public CsvReportPage(Path path) throws IOException {
-        this(Files.newInputStream(path, StandardOpenOption.READ), UTF_8, getDefaultCsvParserSettings());
+        this(Files.newInputStream(path, StandardOpenOption.READ));
+    }
+
+    /**
+     * Closes inputStream if success. UTF-8 encoded stream data expected.
+     */
+    public CsvReportPage(InputStream inputStream) throws IOException {
+        this(inputStream, UTF_8, getDefaultCsvParserSettings());
     }
 
     /**
@@ -75,13 +80,14 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
     }
 
     @Override
-    public TableCellAddress find(int startRow, int endRow, int startColumn, int endColumn, Predicate<Object> cellValuePredicate) {
+    public TableCellAddress find(int startRow, int endRow, int startColumn, int endColumn,
+                                 Predicate<@Nullable Object> cellValuePredicate) {
         return CsvTableHelper.find(rows, startRow, endRow, startColumn, endColumn, cellValuePredicate::test);
     }
 
     @Override
-    public CsvTableRow getRow(int i) {
-        return (i >= rows.length) ? null : new CsvTableRow(rows[i], i);
+    public @Nullable CsvTableRow getRow(int i) {
+        return (i < 0 || i >= rows.length) ? null : CsvTableRow.of(rows[i], i);
     }
 
     @Override
