@@ -1,6 +1,6 @@
 /*
- * Table Wrapper Xml SpreadsheetML Impl
- * Copyright (C) 2022  Vitalii Ananev <spacious-team@ya.ru>
+ * Table Wrapper CSV Impl
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,33 +18,47 @@
 
 package org.spacious_team.table_wrapper.csv;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractTableCell;
+import org.spacious_team.table_wrapper.api.EmptyTableCell;
+import org.spacious_team.table_wrapper.api.TableCell;
 
-public class CsvTableCell extends AbstractTableCell<CsvTableCell.RowAndIndex> {
+@ToString
+@EqualsAndHashCode(callSuper = true)
+public class CsvTableCell extends AbstractTableCell<String, CsvCellDataAccessObject> {
 
     @Getter
-    private final RowAndIndex rowAndIndex;
+    private final int columnIndex;
+    private final String value;
 
-    public static CsvTableCell of(String[] row, int columnIndex) {
-        return new CsvTableCell(new RowAndIndex(row, columnIndex));
+    public static TableCell of(String[] row, int columnIndex) {
+        return of(row, columnIndex, CsvCellDataAccessObject.INSTANCE);
     }
 
-    public CsvTableCell(RowAndIndex rowAndIndex) {
-        super(rowAndIndex, CsvCellDataAccessObject.INSTANCE);
-        this.rowAndIndex = rowAndIndex;
+    public static TableCell of(String[] row, int columnIndex, CsvCellDataAccessObject dao) {
+        @Nullable String cellValue = getCellValue(row, columnIndex);
+        return cellValue == null ?
+                EmptyTableCell.of(columnIndex) :
+                new CsvTableCell(cellValue, columnIndex, dao);
+    }
+
+    private static @Nullable String getCellValue(String[] row, int columnIndex) {
+        return (columnIndex >= 0) && (columnIndex < row.length) ?
+                row[columnIndex] :
+                null;
+    }
+
+    private CsvTableCell(String cellValue, int columnIndex, CsvCellDataAccessObject dao) {
+        super(cellValue, dao);
+        this.value = cellValue;
+        this.columnIndex = columnIndex;
     }
 
     @Override
-    public int getColumnIndex() {
-        return rowAndIndex.getColumnIndex();
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    static class RowAndIndex {
-        final String[] row;
-        final int columnIndex;
+    protected CsvTableCell createWithCellDataAccessObject(CsvCellDataAccessObject dao) {
+        return new CsvTableCell(value, columnIndex, dao);
     }
 }
