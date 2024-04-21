@@ -32,8 +32,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.*;
 
 class CsvReportPageTest {
 
@@ -51,6 +53,20 @@ class CsvReportPageTest {
         } finally {
             Files.delete(path);
         }
+    }
+
+    @Test
+    void createFomInputStream_inputStreamNotClosed() throws IOException {
+        ByteArrayInputStream is = spy(new ByteArrayInputStream(new byte[]{}));
+        new CsvReportPage(is);
+        verify(is, never()).close();
+    }
+
+    @Test
+    void createFomInputStreamAndSettings_inputStreamNotClosed() throws IOException {
+        ByteArrayInputStream is = spy(new ByteArrayInputStream(new byte[]{}));
+        new CsvReportPage(is, UTF_8, CsvReportPage.getDefaultCsvParserSettings());
+        verify(is, never()).close();
     }
 
     @ParameterizedTest

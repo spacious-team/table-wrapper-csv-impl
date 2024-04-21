@@ -24,7 +24,7 @@
 
     <groupId>org.spacious-team</groupId>
     <artifactId>table-wrapper-csv-impl</artifactId>
-    <version>2023.1</version>
+    <version>2024.1</version>
     <packaging>jar</packaging>
 
     <name>Table Wrapper API CSV Implementation</name>
@@ -49,8 +49,8 @@
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.28</lombok.version>
-        <checkerframework.version>3.32.0</checkerframework.version>
+        <lombok.version>1.18.32</lombok.version>
+        <checkerframework.version>3.42.0</checkerframework.version>
     </properties>
 
     <repositories>
@@ -123,7 +123,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version> <!-- JUnit 5 requirement -->
+                    <version>3.2.5</version> <!-- JUnit 5 requirement -->
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -131,7 +131,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <fork>true</fork> <!-- Must fork or else JVM arguments are ignored. -->
                     <showDeprecation>true</showDeprecation>
@@ -174,7 +174,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -194,7 +194,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

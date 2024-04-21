@@ -20,6 +20,7 @@ package org.spacious_team.table_wrapper.csv;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.AbstractReportPage;
 import org.spacious_team.table_wrapper.api.TableCellAddress;
@@ -44,23 +45,38 @@ public class CsvReportPage extends AbstractReportPage<CsvTableRow> {
      * Field and line delimiter detected automatically. UTF-8 encoded file expected.
      */
     public CsvReportPage(Path path) throws IOException {
-        this(Files.newInputStream(path, StandardOpenOption.READ));
+        try (InputStream inputStream = Files.newInputStream(path, StandardOpenOption.READ)) {
+            this.rows = readRows(inputStream, UTF_8, getDefaultCsvParserSettings());
+        }
     }
 
     /**
-     * Closes inputStream if success. UTF-8 encoded stream data expected.
+     * Field and line delimiter detected automatically. UTF-8 encoded file expected.
+     *
+     * @implSpec Does not close inputStream
      */
     public CsvReportPage(InputStream inputStream) throws IOException {
         this(inputStream, UTF_8, getDefaultCsvParserSettings());
     }
 
     /**
-     * Closes inputStream if success
+     * @implSpec Does not close inputStream
      */
     public CsvReportPage(InputStream inputStream, Charset charset, CsvParserSettings csvParserSettings) throws IOException {
+        CloseIgnoringInputStream closeIgnoringInputStream = new CloseIgnoringInputStream(inputStream);
+        this.rows = readRows(closeIgnoringInputStream, charset, csvParserSettings);
+    }
+
+    /**
+     * @implSpec Closes inputStream
+     */
+    private static String[] @NonNull [] readRows(InputStream inputStream,
+                                                 Charset charset,
+                                                 CsvParserSettings csvParserSettings) throws IOException {
         try (Reader inputReader = new InputStreamReader(inputStream, charset)) {
             CsvParser parser = new CsvParser(csvParserSettings);
-            rows = parser.parseAll(inputReader).toArray(new String[0][]);
+            return parser.parseAll(inputReader)
+                    .toArray(new String[0][]);
         }
     }
 
