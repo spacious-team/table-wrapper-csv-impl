@@ -18,9 +18,9 @@ TableFactoryRegistry.add(new CsvTableFactory());
 ```java
 ReportPage reportPage = new CsvReportPage(Path.of("1.csv"));
 
-Table table1 = reportPage.create("Table 1 description", ...);
+Table table1 = reportPage.createTable("Table 1 description", ...);
 ...
-Table tableN = reportPage.create("Table N description", ...);
+Table tableN = reportPage.createTable("Table N description", ...);
 ```
 Объекты `table`...`tableN` используются для удобного доступа к строкам и к значениям ячеек.
 
