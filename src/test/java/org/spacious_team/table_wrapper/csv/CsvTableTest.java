@@ -47,7 +47,7 @@ class CsvTableTest {
         //noinspection unchecked
         reportPage = mock(AbstractReportPage.class);
         //noinspection ConstantConditions
-        when(reportPage.getRow(tableRange.getFirstRow() + 1)).thenReturn(mock(CsvTableRow.class)); // header row
+        when(reportPage.getRow(tableRange.getFirstRow())).thenReturn(mock(CsvTableRow.class)); // header row
         csvTable = new CsvTable(reportPage, "table name", tableRange, TableHeader.class, 1);
     }
 
